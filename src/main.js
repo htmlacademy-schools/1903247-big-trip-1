@@ -1,10 +1,10 @@
 import {createSiteMenuTemplate} from './view/site-menu-view';
-import {createFilterTemplate} from './view/filter-view'
+import {createFilterTemplate} from './view/filter-view';
 import {CreateSortTemplate} from './view/sort-view';
-import { createContentTemplate } from "./view/content-view";
-import { createOfferForm } from "./view/offer-form-view";
+import { createContentTemplate } from './view/content-view';
+import { createOfferForm } from './view/offer-form-view';
 
-import {renderTemplate, renderPosition} from './render.js'
+import {renderTemplate, renderPosition} from './render.js';
 
 const tripBody = document.querySelector('.page-body');
 const siteMenuElement = tripBody.querySelector('.trip-controls__navigation');

@@ -38,6 +38,5 @@ export const createContentTemplate = (
         </div>
       </li>
 
-
     </ul>`
-  );
+);
