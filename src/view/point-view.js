@@ -1,12 +1,16 @@
-export const createContentTemplate = (
-  `<ul class="trip-events__list">
+export const createPointTemplate = (point) => {
+  const {pointType, destination, offer, destinationInfo} = point;
+
+
+
+  return `<ul class="trip-events__list">
       <li class="trip-events__item">
         <div class="event">
           <time class="event__date" datetime="2019-03-18">MAR 18</time>
           <div class="event__type">
-            <img class="event__type-icon" width="42" height="42" src="img/icons/taxi.png" alt="Event type icon">
+            <img class="event__type-icon" width="42" height="42" src="img/icons/${pointType}.png" alt="Event type icon">
           </div>
-          <h3 class="event__title">Taxi Amsterdam</h3>
+          <h3 class="event__title">${pointType} ${destination}</h3>
           <div class="event__schedule">
             <p class="event__time">
               <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>
@@ -21,9 +25,9 @@ export const createContentTemplate = (
           <h4 class="visually-hidden">Offers:</h4>
           <ul class="event__selected-offers">
             <li class="event__offer">
-              <span class="event__offer-title">Order Uber</span>
+              <span class="event__offer-title">${offer.offers[0].title || ''} </span>
               &plus;&euro;&nbsp;
-              <span class="event__offer-price">20</span>
+              <span class="event__offer-price">${offer.offers[0].price || ''}</span>
             </li>
           </ul>
           <button class="event__favorite-btn event__favorite-btn--active" type="button">
@@ -39,4 +43,4 @@ export const createContentTemplate = (
       </li>
 
     </ul>`
-);
+};

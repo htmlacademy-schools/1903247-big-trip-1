@@ -1,10 +1,17 @@
 import {createSiteMenuTemplate} from './view/site-menu-view';
 import {createFilterTemplate} from './view/filter-view';
 import {CreateSortTemplate} from './view/sort-view';
-import { createContentTemplate } from './view/content-view';
+import { createPointTemplate } from './view/point-view';
 import { createOfferForm } from './view/offer-form-view';
 
 import {renderTemplate, renderPosition} from './render.js';
+import { generatePoint } from "./mock/point";
+
+
+const POINT_COUNT = 5;
+const points = Array.from({length: POINT_COUNT}, generatePoint);
+console.log(points);
+
 
 const tripBody = document.querySelector('.page-body');
 const siteMenuElement = tripBody.querySelector('.trip-controls__navigation');
@@ -15,7 +22,11 @@ const tripEventsElem = tripBody.querySelector('.trip-events');
 renderTemplate(siteMenuElement, createSiteMenuTemplate(), renderPosition.BEFOREEND);
 renderTemplate(filtersElement, createFilterTemplate, renderPosition.BEFOREEND);
 renderTemplate(tripEventsElem, CreateSortTemplate, renderPosition.BEFOREEND);
-renderTemplate(tripEventsElem, createOfferForm, renderPosition.BEFOREEND);
-renderTemplate(tripEventsElem, createContentTemplate, renderPosition.BEFOREEND);
-renderTemplate(tripEventsElem, createContentTemplate, renderPosition.BEFOREEND);
-renderTemplate(tripEventsElem, createContentTemplate, renderPosition.BEFOREEND);
+
+renderTemplate(tripEventsElem, createOfferForm(points[0]), renderPosition.BEFOREEND);
+for (let i = 1; i < POINT_COUNT; i++) {
+  renderTemplate(tripEventsElem, createPointTemplate(points[i]), renderPosition.BEFOREEND);
+}
+
+// renderTemplate(tripEventsElem, createPointTemplate, renderPosition.BEFOREEND);
+// renderTemplate(tripEventsElem, createPointTemplate, renderPosition.BEFOREEND);
