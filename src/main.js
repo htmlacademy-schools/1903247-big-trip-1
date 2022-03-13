@@ -12,7 +12,6 @@ import { generatePoint } from './mock/point';
 const POINT_COUNT = 5;
 const points = Array.from({length: POINT_COUNT}, generatePoint);
 
-
 const tripBody = document.querySelector('.page-body');
 const headerMenu = tripBody.querySelector('.trip-main');
 const siteMenuElement = tripBody.querySelector('.trip-controls__navigation');
@@ -20,7 +19,7 @@ const filtersElement = tripBody.querySelector('.trip-controls__filters');
 const tripEventsElem = tripBody.querySelector('.trip-events');
 
 
-renderTemplate(headerMenu, createHeaderInfoTemplate(), renderPosition.AFTERBEGIN);
+renderTemplate(headerMenu, createHeaderInfoTemplate(points[0]), renderPosition.AFTERBEGIN);
 renderTemplate(siteMenuElement, createSiteMenuTemplate(), renderPosition.BEFOREEND);
 renderTemplate(filtersElement, createFilterTemplate, renderPosition.BEFOREEND);
 renderTemplate(tripEventsElem, CreateSortTemplate, renderPosition.BEFOREEND);

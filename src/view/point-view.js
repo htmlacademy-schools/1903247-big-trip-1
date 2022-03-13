@@ -1,5 +1,5 @@
 export const createPointTemplate = (point) => {
-  const {pointType, price, time, destination, offer} = point;
+  const {pointType, price, destination, offer} = point;
 
   return `<ul class="trip-events__list">
       <li class="trip-events__item">
@@ -11,7 +11,7 @@ export const createPointTemplate = (point) => {
           <h3 class="event__title">${pointType} ${destination}</h3>
           <div class="event__schedule">
             <p class="event__time">
-              <time class="event__start-time" datetime="2019-03-18T10:30">${time}</time>
+              <time class="event__start-time" datetime="2019-03-18T10:30">10:30</time>
               &mdash;
               <time class="event__end-time" datetime="2019-03-18T11:00">11:00</time>
             </p>
