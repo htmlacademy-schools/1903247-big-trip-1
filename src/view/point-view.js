@@ -40,5 +40,5 @@ export const createPointTemplate = (point) => {
         </div>
       </li>
 
-    </ul>`
+    </ul>`;
 };

@@ -1,5 +1,5 @@
 export const createOfferForm = (point) => {
-  const {pointType, destination, offer, destinationInfo} = point;
+  const {pointType, destination, destinationInfo} = point;
 
   return `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
@@ -162,5 +162,5 @@ export const createOfferForm = (point) => {
           </section>
         </section>
       </form>
-    </li>`
+    </li>`;
 };

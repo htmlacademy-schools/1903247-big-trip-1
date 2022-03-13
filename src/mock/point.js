@@ -31,7 +31,7 @@ const generateDestinationCity = () => {
 };
 
 const generateOffers = () => {
-  let offers = [];
+  const offers = [];
   for (let i = 0; i < getRandomIntInclusive(0, 5); i++) {
     offers.push({ id: i, title: 'example title', price: getRandomIntInclusive(10, 100) });
   }
@@ -39,8 +39,8 @@ const generateOffers = () => {
   return offers;
 };
 
-const generatePictures = () => {;
-  let picturesSrc = [];
+const generatePictures = () => {
+  const picturesSrc = [];
   for (let i = 0; i <= 4; i++) {
     picturesSrc.push(`http://picsum.photos/248/152?r=${Math.random()}`);
   }
@@ -64,5 +64,5 @@ export const generatePoint = () => {
       description: generateDescription(),
       pictures: generatePictures()
     }
-  }
+  };
 };
