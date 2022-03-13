@@ -19,7 +19,7 @@ const generateDescription = () => {
 }
 
 const generatePointType = () => {
-  const pointTypes = ["taxi", "bus", "train", "ship", "drive", "flight", "check-in", "sightseeing", "restaurant"]
+  const pointTypes = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
   return pointTypes[getRandomIntInclusive(0, pointTypes.length - 1)];
 }
@@ -39,9 +39,7 @@ const generateOffers = () => {
   return offers;
 }
 
-const generatePictures = () => {
-  // let newPicture = document.createElement('img');
-  // newPicture.classList.add('event__photo');
+const generatePictures = () => {;
   let picturesSrc = [];
   for (let i = 0; i <= 4; i++) {
     picturesSrc.push(`http://picsum.photos/248/152?r=${Math.random()}`);
@@ -56,6 +54,7 @@ export const generatePoint = () => {
 
   return {
     pointType,
+    price: getRandomIntInclusive(5, 200),
     destination: generateDestinationCity(),
     offer: {
       type: pointType,
