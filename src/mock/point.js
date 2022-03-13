@@ -2,7 +2,7 @@ const getRandomIntInclusive = (min, max) => {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1) + min);
-}
+};
 
 const generateDescription = () => {
   const description = [
@@ -16,19 +16,19 @@ const generateDescription = () => {
   ];
 
   return description.slice(0, getRandomIntInclusive(1, 5));
-}
+};
 
 const generatePointType = () => {
   const pointTypes = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
   return pointTypes[getRandomIntInclusive(0, pointTypes.length - 1)];
-}
+};
 
 const generateDestinationCity = () => {
   const cities = ['Ekaterinburg', 'Moscow', 'Perm', 'kiev', 'Paris', 'Prague', 'Amsterdam'];
 
   return cities[getRandomIntInclusive(0, cities.length - 1)];
-}
+};
 
 const generateOffers = () => {
   let offers = [];
@@ -37,7 +37,7 @@ const generateOffers = () => {
   }
 
   return offers;
-}
+};
 
 const generatePictures = () => {;
   let picturesSrc = [];
@@ -46,7 +46,7 @@ const generatePictures = () => {;
   }
 
   return picturesSrc;
-}
+};
 
 
 export const generatePoint = () => {

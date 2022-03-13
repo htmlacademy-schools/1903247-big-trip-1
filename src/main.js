@@ -11,7 +11,6 @@ import { generatePoint } from './mock/point';
 
 const POINT_COUNT = 5;
 const points = Array.from({length: POINT_COUNT}, generatePoint);
-console.log(points);
 
 
 const tripBody = document.querySelector('.page-body');
