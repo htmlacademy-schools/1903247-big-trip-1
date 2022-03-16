@@ -1,11 +1,11 @@
-import {createHeaderInfoTemplate} from './view/header-info-view';
-import {createSiteMenuTemplate} from './view/site-menu-view';
-import {createFilterTemplate} from './view/filter-view';
-import {CreateSortTemplate} from './view/sort-view';
-import { createPointTemplate } from './view/point-view';
-import { createOfferForm } from './view/offer-form-view';
+import HeaderInfoView from './view/header-info-view';
+import SiteMenuView from './view/site-menu-view';
+import FilterView from './view/filter-view';
+import SortView from './view/sort-view';
+import PointView from './view/point-view';
+import OfferFormView from './view/offer-form-view';
 
-import {renderTemplate, renderPosition} from './render.js';
+import {render, renderPosition} from './render.js';
 import { generatePoint } from './mock/point';
 
 
@@ -19,12 +19,12 @@ const filtersElement = tripBody.querySelector('.trip-controls__filters');
 const tripEventsElem = tripBody.querySelector('.trip-events');
 
 
-renderTemplate(headerMenu, createHeaderInfoTemplate(points[0]), renderPosition.AFTERBEGIN);
-renderTemplate(siteMenuElement, createSiteMenuTemplate(), renderPosition.BEFOREEND);
-renderTemplate(filtersElement, createFilterTemplate, renderPosition.BEFOREEND);
-renderTemplate(tripEventsElem, CreateSortTemplate, renderPosition.BEFOREEND);
+render(headerMenu, new HeaderInfoView(points[0]).element, renderPosition.AFTERBEGIN);
+render(siteMenuElement, new SiteMenuView().element, renderPosition.BEFOREEND);
+render(filtersElement, new FilterView().element, renderPosition.BEFOREEND);
+render(tripEventsElem, new SortView().element, renderPosition.BEFOREEND);
 
-renderTemplate(tripEventsElem, createOfferForm(points[0]), renderPosition.BEFOREEND);
+render(tripEventsElem, new OfferFormView(points[0]).element, renderPosition.BEFOREEND);
 for (let i = 1; i < POINT_COUNT; i++) {
-  renderTemplate(tripEventsElem, createPointTemplate(points[i]), renderPosition.BEFOREEND);
+  render(tripEventsElem, new PointView(points[i]).element, renderPosition.BEFOREEND);
 }

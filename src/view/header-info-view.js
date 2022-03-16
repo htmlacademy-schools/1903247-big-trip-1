@@ -1,4 +1,6 @@
-export const createHeaderInfoTemplate = (pointStart) => {
+import {createElement} from '../render.js';
+
+const createHeaderInfoTemplate = (pointStart) => {
   const {destination} = pointStart;
 
   return `<section class="trip-main__trip-info  trip-info">
@@ -13,3 +15,28 @@ export const createHeaderInfoTemplate = (pointStart) => {
     </p>
   </section>`;
 };
+
+export default class HeaderInfoView {
+  #element = null;
+  #pointStart = null;
+
+  constructor (pointStart) {
+    this.#pointStart = pointStart;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createHeaderInfoTemplate(this.#pointStart);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}
