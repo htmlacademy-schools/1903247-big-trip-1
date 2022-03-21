@@ -7,12 +7,12 @@ import OfferFormView from './view/offer-form-view';
 import PointListView from './view/point-list-view';
 import MessageWithoutPoints from './view/empty-points-list';
 
-import {render, renderPosition} from './render.js';
+import { render, renderPosition } from './render.js';
 import { generatePoint } from './mock/point';
 
 
-const POINT_COUNT = 0;
-const points = Array.from({length: POINT_COUNT}, generatePoint);
+const POINT_COUNT = 4;
+const points = Array.from({ length: POINT_COUNT }, generatePoint);
 
 const tripBody = document.querySelector('.page-body');
 const headerMenu = tripBody.querySelector('.trip-main');

@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from './abstract-view';
 
 const createOfferForm = (point) => {
   const {pointType, destination, destinationInfo} = point;
@@ -167,27 +167,15 @@ const createOfferForm = (point) => {
     </li>`;
 };
 
-export default class OfferFormView {
-  #element = null;
+export default class OfferFormView extends AbstractView {
   #point = null;
 
   constructor(point) {
+    super();
     this.#point = point;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
   }
 
   get template() {
     return createOfferForm(this.#point);
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

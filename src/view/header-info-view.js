@@ -15,7 +15,6 @@ const createHeaderInfoTemplate = (pointStart) => {
     </p>
   </section>`;
 };
-
 export default class HeaderInfoView {
   #element = null;
   #pointStart = null;
