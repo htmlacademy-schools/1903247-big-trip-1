@@ -64,7 +64,7 @@ render(filtersElement, new FilterView(), renderPosition.BEFOREEND);
 if (points.length === 0) {
   render(pointListComponent, new MessageWithoutPoints(), renderPosition.BEFOREEND);
 } else {
-  render(headerMenu, new HeaderInfoView(points[0]), renderPosition.AFTERBEGIN);
+  render(headerMenu, new HeaderInfoView(points[0]).element, renderPosition.AFTERBEGIN);
   render(mainContainer, new SortView(), renderPosition.AFTERBEGIN);
 
   for (let i = 0; i < POINT_COUNT; i++) {
