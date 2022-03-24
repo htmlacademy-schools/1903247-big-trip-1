@@ -25,7 +25,7 @@ const generatePointType = () => {
 };
 
 const generateDestinationCity = () => {
-  const cities = ['Ekaterinburg', 'Moscow', 'Perm', 'kiev', 'Paris', 'Prague', 'Amsterdam'];
+  const cities = ['Ekaterinburg', 'Moscow', 'Perm', 'Kyiv', 'Paris', 'Prague', 'Amsterdam'];
 
   return cities[getRandomIntInclusive(0, cities.length - 1)];
 };

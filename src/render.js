@@ -11,18 +11,22 @@ export const render = (container, element, place) => {
   const parent = container instanceof AbstractView ? container.element : container;
   const child = element instanceof AbstractView ? element.element : element;
   switch (place) {
-    case renderPosition.BEFOREBEGIN:
+    case renderPosition.BEFOREBEGIN: {
       parent.before(child);
       break;
-    case renderPosition.AFTERBEGIN:
+    }
+    case renderPosition.AFTERBEGIN: {
       parent.prepend(child);
       break;
-    case renderPosition.BEFOREEND:
+    }
+    case renderPosition.BEFOREEND: {
       parent.append(child);
       break;
-    case renderPosition.AFTEREND:
+    }
+    case renderPosition.AFTEREND: {
       parent.after(child);
       break;
+    }
   }
 };
 
@@ -30,5 +34,5 @@ export const createElement = (template) => {
   const newElement = document.createElement('div');
   newElement.innerHTML = template;
 
-  return newElement.firstChild;
+  return newElement.firstElementChild;
 };
