@@ -1,11 +1,12 @@
-import {createHeaderInfoTemplate} from './view/header-info-view';
-import {createSiteMenuTemplate} from './view/site-menu-view';
-import {createFilterTemplate} from './view/filter-view';
-import {CreateSortTemplate} from './view/sort-view';
-import { createPointTemplate } from './view/point-view';
-import { createOfferForm } from './view/offer-form-view';
+import HeaderInfoView from './view/header-info-view';
+import SiteMenuView from './view/site-menu-view';
+import FilterView from './view/filter-view';
+import SortView from './view/sort-view';
+import PointView from './view/point-view';
+import OfferFormView from './view/offer-form-view';
+import PointListView from './view/point-list-view';
 
-import {renderTemplate, renderPosition} from './render.js';
+import {render, renderPosition} from './render.js';
 import { generatePoint } from './mock/point';
 
 
@@ -18,13 +19,39 @@ const siteMenuElement = tripBody.querySelector('.trip-controls__navigation');
 const filtersElement = tripBody.querySelector('.trip-controls__filters');
 const tripEventsElem = tripBody.querySelector('.trip-events');
 
+const renderPoint = (pointListElement, point) => {
+  const pointComponent = new PointView(point);
+  const pointEditComponent = new OfferFormView(point);
 
-renderTemplate(headerMenu, createHeaderInfoTemplate(points[0]), renderPosition.AFTERBEGIN);
-renderTemplate(siteMenuElement, createSiteMenuTemplate(), renderPosition.BEFOREEND);
-renderTemplate(filtersElement, createFilterTemplate, renderPosition.BEFOREEND);
-renderTemplate(tripEventsElem, CreateSortTemplate, renderPosition.BEFOREEND);
+  const replacePointToForm = () => {
+    pointListElement.replaceChild(pointEditComponent.element, pointComponent.element);
+  };
 
-renderTemplate(tripEventsElem, createOfferForm(points[0]), renderPosition.BEFOREEND);
-for (let i = 1; i < POINT_COUNT; i++) {
-  renderTemplate(tripEventsElem, createPointTemplate(points[i]), renderPosition.BEFOREEND);
+  const replaceFormToPoint = () => {
+    pointListElement.replaceChild(pointComponent.element, pointEditComponent.element);
+  };
+
+  pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    replacePointToForm();
+  });
+
+  pointEditComponent.element.querySelector('form').addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    replaceFormToPoint();
+  });
+
+  render(pointListElement, pointComponent.element, renderPosition.BEFOREEND);
+};
+
+const pointListComponent = new PointListView();
+render(tripEventsElem, pointListComponent.element, renderPosition.BEFOREEND);
+
+render(headerMenu, new HeaderInfoView(points[0]).element, renderPosition.AFTERBEGIN);
+render(siteMenuElement, new SiteMenuView().element, renderPosition.BEFOREEND);
+render(filtersElement, new FilterView().element, renderPosition.BEFOREEND);
+render(tripEventsElem, new SortView().element, renderPosition.AFTERBEGIN);
+
+
+for (let i = 0; i < POINT_COUNT; i++) {
+  renderPoint(pointListComponent.element, points[i]);
 }

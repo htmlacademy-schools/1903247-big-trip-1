@@ -1,4 +1,6 @@
-export const createPointTemplate = (point) => {
+import {createElement} from '../render.js';
+
+const createPointTemplate = (point) => {
   const {pointType, price, destination, offer} = point;
 
   return `<ul class="trip-events__list">
@@ -42,3 +44,28 @@ export const createPointTemplate = (point) => {
 
     </ul>`;
 };
+
+export default class PointView {
+  #element = null;
+  #point = null;
+
+  constructor(point) {
+    this.#point = point;
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
+
+    return this.#element;
+  }
+
+  get template() {
+    return createPointTemplate(this.#point);
+  }
+
+  removeElement() {
+    this.#element = null;
+  }
+}
