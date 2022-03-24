@@ -3,8 +3,7 @@ import {createElement} from '../render.js';
 const createPointTemplate = (point) => {
   const {pointType, price, destination, offer} = point;
 
-  return `<ul class="trip-events__list">
-      <li class="trip-events__item">
+  return `<li class="trip-events__item">
         <div class="event">
           <time class="event__date" datetime="2019-03-18">MAR 18</time>
           <div class="event__type">
@@ -41,8 +40,7 @@ const createPointTemplate = (point) => {
           </button>
         </div>
       </li>
-
-    </ul>`;
+`;
 };
 
 export default class PointView {
