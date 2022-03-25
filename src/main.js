@@ -7,12 +7,12 @@ import OfferFormView from './view/offer-form-view';
 import PointListView from './view/point-list-view';
 import MessageWithoutPoints from './view/empty-points-list';
 
-import {render, renderPosition} from './render.js';
+import { render, renderPosition } from './render.js';
 import { generatePoint } from './mock/point';
 
 
-const POINT_COUNT = 0;
-const points = Array.from({length: POINT_COUNT}, generatePoint);
+const POINT_COUNT = 4;
+const points = Array.from({ length: POINT_COUNT }, generatePoint);
 
 const tripBody = document.querySelector('.page-body');
 const headerMenu = tripBody.querySelector('.trip-main');
@@ -40,33 +40,32 @@ const renderPoint = (pointListElement, point) => {
     }
   };
 
-  pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+  pointComponent.setEditClickHandler(() => {
     replacePointToForm();
     document.addEventListener('keydown', onEscKeydowm);
   });
 
-  pointEditComponent.element.querySelector('form').addEventListener('submit', (evt) => {
-    evt.preventDefault();
+  pointEditComponent.setFormSubmitHandler(() => {
     replaceFormToPoint();
     document.removeEventListener('keydown', onEscKeydowm);
   });
 
-  render(pointListElement, pointComponent.element, renderPosition.BEFOREEND);
+  render(pointListElement, pointComponent, renderPosition.BEFOREEND);
 };
 
 const pointListComponent = new PointListView();
-render(mainContainer, pointListComponent.element, renderPosition.BEFOREEND);
+render(mainContainer, pointListComponent, renderPosition.BEFOREEND);
 
 
-render(siteMenuElement, new SiteMenuView().element, renderPosition.BEFOREEND);
-render(filtersElement, new FilterView().element, renderPosition.BEFOREEND);
+render(siteMenuElement, new SiteMenuView(), renderPosition.BEFOREEND);
+render(filtersElement, new FilterView(), renderPosition.BEFOREEND);
 
 
 if (points.length === 0) {
-  render(pointListComponent.element, new MessageWithoutPoints().element, renderPosition.BEFOREEND);
+  render(pointListComponent, new MessageWithoutPoints(), renderPosition.BEFOREEND);
 } else {
   render(headerMenu, new HeaderInfoView(points[0]).element, renderPosition.AFTERBEGIN);
-  render(mainContainer, new SortView().element, renderPosition.AFTERBEGIN);
+  render(mainContainer, new SortView(), renderPosition.AFTERBEGIN);
 
   for (let i = 0; i < POINT_COUNT; i++) {
     renderPoint(pointListComponent.element, points[i]);

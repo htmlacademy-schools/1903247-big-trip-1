@@ -1,3 +1,5 @@
+import AbstractView from './view/abstract-view';
+
 export const renderPosition = {
   BEFOREBEGIN: 'beforebegin',
   AFTERBEGIN: 'afterbegin',
@@ -6,19 +8,25 @@ export const renderPosition = {
 };
 
 export const render = (container, element, place) => {
+  const parent = container instanceof AbstractView ? container.element : container;
+  const child = element instanceof AbstractView ? element.element : element;
   switch (place) {
-    case renderPosition.BEFOREBEGIN:
-      container.before(element);
+    case renderPosition.BEFOREBEGIN: {
+      parent.before(child);
       break;
-    case renderPosition.AFTERBEGIN:
-      container.prepend(element);
+    }
+    case renderPosition.AFTERBEGIN: {
+      parent.prepend(child);
       break;
-    case renderPosition.BEFOREEND:
-      container.append(element);
+    }
+    case renderPosition.BEFOREEND: {
+      parent.append(child);
       break;
-    case renderPosition.AFTEREND:
-      container.after(element);
+    }
+    case renderPosition.AFTEREND: {
+      parent.after(child);
       break;
+    }
   }
 };
 
@@ -26,5 +34,5 @@ export const createElement = (template) => {
   const newElement = document.createElement('div');
   newElement.innerHTML = template;
 
-  return newElement.firstChild;
+  return newElement.firstElementChild;
 };
