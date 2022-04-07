@@ -2,11 +2,12 @@ import HeaderInfoView from '../view/header-info-view';
 import SiteMenuView from '../view/site-menu-view';
 import FilterView from '../view/filter-view';
 import SortView from '../view/sort-view';
-import PointView from '../view/point-view';
-import OfferFormView from '../view/offer-form-view';
+// import PointView from '../view/point-view';
+// import OfferFormView from '../view/offer-form-view';
 import PointListView from '../view/point-list-view';
 import MessageWithoutPoints from '../view/empty-points-list';
-import { render, renderPosition, replace } from '../render.js';
+import { render, renderPosition } from '../render.js';
+import PointPresenter from './Point-presenter';
 
 
 export default class TripPresenter {
@@ -17,8 +18,8 @@ export default class TripPresenter {
   #headerInfoComponent = new HeaderInfoView();
   #siteMenuComponent = new SiteMenuView();
   #filterComponent = new FilterView();
-  #pointComponent = new PointView();
-  #pointEditedComponent = new OfferFormView();
+  // #pointComponent = new PointView();
+  // #pointEditedComponent = new OfferFormView();
   #pointListComponent = new PointListView();
 
   #boardPoints = [];
@@ -36,36 +37,8 @@ export default class TripPresenter {
   }
 
   #renderPoint = (point) => {
-    const pointComponent = new PointView(point);
-    const pointEditComponent = new OfferFormView(point);
-
-    const replacePointToForm = () => {
-      replace(pointEditComponent, pointComponent);
-    };
-
-    const replaceFormToPoint = () => {
-      replace(pointComponent, pointEditComponent);
-    };
-
-    const onEscKeydowm = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        replaceFormToPoint();
-        document.removeEventListener('keydown', onEscKeydowm);
-      }
-    };
-
-    pointComponent.setEditClickHandler(() => {
-      replacePointToForm();
-      document.addEventListener('keydown', onEscKeydowm);
-    });
-
-    pointEditComponent.setFormSubmitHandler(() => {
-      replaceFormToPoint();
-      document.removeEventListener('keydown', onEscKeydowm);
-    });
-
-    render(this.#pointListComponent, pointComponent, renderPosition.BEFOREEND);
+    const pointPresenter = new PointPresenter(this.#pointListComponent);
+    pointPresenter.init(point);
   };
 
   #renderPoints = () => {
