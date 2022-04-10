@@ -8,6 +8,7 @@ import PointListView from '../view/point-list-view';
 import MessageWithoutPoints from '../view/empty-points-list';
 import { render, renderPosition } from '../render.js';
 import PointPresenter from './Point-presenter';
+import { updateItem } from '../common';
 
 
 export default class TripPresenter {
@@ -23,6 +24,7 @@ export default class TripPresenter {
   #pointListComponent = new PointListView();
 
   #boardPoints = [];
+  #pointPresenter = new Map();
 
   constructor(tripContainer) {
     this.#tripContainer = tripContainer;
@@ -36,9 +38,19 @@ export default class TripPresenter {
     this.#renderBoard();
   }
 
+  #handleModeChange = () => {
+    this.#pointPresenter.forEach((element) => element.resetView());
+  }
+
+  #handlePointChange = (updatePoint) => {
+    this.#boardPoints = updateItem(this.#boardPoints, updatePoint);
+    this.#pointPresenter.get(updatePoint.id).init(updatePoint);
+  }
+
   #renderPoint = (point) => {
-    const pointPresenter = new PointPresenter(this.#pointListComponent);
+    const pointPresenter = new PointPresenter(this.#pointListComponent, this.#handlePointChange, this.#handleModeChange);
     pointPresenter.init(point);
+    this.#pointPresenter.set(point.id, pointPresenter);
   };
 
   #renderPoints = () => {
