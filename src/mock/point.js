@@ -1,3 +1,5 @@
+import { nanoid } from 'nanoid';
+
 const getRandomIntInclusive = (min, max) => {
   min = Math.ceil(min);
   max = Math.floor(max);
@@ -54,6 +56,7 @@ export const generatePoint = () => {
 
   return {
     pointType,
+    id: nanoid(),
     price: getRandomIntInclusive(5, 200),
     destination: generateDestinationCity(),
     offer: {
@@ -63,6 +66,7 @@ export const generatePoint = () => {
     destinationInfo: {
       description: generateDescription(),
       pictures: generatePictures()
-    }
+    },
+    isFavorite: false
   };
 };
