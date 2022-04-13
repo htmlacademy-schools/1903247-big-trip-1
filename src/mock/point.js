@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid';
+//import dayjs from 'dayjs';
 
 const getRandomIntInclusive = (min, max) => {
   min = Math.ceil(min);
@@ -50,9 +51,26 @@ const generatePictures = () => {
   return picturesSrc;
 };
 
+const getTimePeriod = (waitingTime) => {
+  const randomHour = getRandomIntInclusive(9, 23);
+  const startRandomMinute = getRandomIntInclusive(0, 11) * 10;
+  const startPeriod = new Date();
+  startPeriod.setHours(randomHour, startRandomMinute);
+  const endPeriod = new Date();
+  endPeriod.setHours(startPeriod.getHours());
+  endPeriod.setMinutes(startPeriod.getMinutes() + waitingTime);
+  return [`${startPeriod.getHours()}:${startPeriod.getMinutes()}`, `${endPeriod.getHours()}:${endPeriod.getMinutes()}`];
+};
+
+const getWaitingTime = () => {
+  const randomNumber = getRandomIntInclusive(1, 24);
+  return randomNumber * 5;
+};
+
 
 export const generatePoint = () => {
   const pointType = generatePointType();
+  const waitingTime = getWaitingTime();
 
   return {
     pointType,
@@ -67,6 +85,8 @@ export const generatePoint = () => {
       description: generateDescription(),
       pictures: generatePictures()
     },
-    isFavorite: false
+    isFavorite: false,
+    waitingTime: waitingTime,
+    period: getTimePeriod(waitingTime)
   };
 };

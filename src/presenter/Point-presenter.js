@@ -44,12 +44,12 @@ export default class PointPresenter {
 
     render(this.#pointContainer, this.#pointComponent, renderPosition.BEFOREEND);
 
-    if (this.#mode === Mode.DEFAULT && prevPointComponent) {
-      replace(this.#pointComponent, prevPointComponent);
-    }
-    if (this.#mode === Mode.EDITING && prevEditPointComponent) {
-      replace(this.#pointEditComponent, prevEditPointComponent);
-    }
+    // if (this.#mode === Mode.DEFAULT && prevPointComponent) {
+    //   replace(this.#pointComponent, prevPointComponent);
+    // }
+    // if (this.#mode === Mode.EDITING && prevEditPointComponent) {
+    //   replace(this.#pointEditComponent, prevEditPointComponent);
+    // }
 
     remove(prevPointComponent);
     remove(prevEditPointComponent);
@@ -59,6 +59,11 @@ export default class PointPresenter {
     if (this.#mode !== Mode.DEFAULT) {
       this.#replaceFormToPoint();
     }
+  }
+
+  destroy = () => {
+    remove(this.#pointComponent);
+    remove(this.#pointEditComponent);
   }
 
   #replacePointToForm = () => {
