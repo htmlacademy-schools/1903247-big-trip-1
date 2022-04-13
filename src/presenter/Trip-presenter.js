@@ -1,7 +1,7 @@
 import SortView from '../view/sort-view';
 import PointListView from '../view/point-list-view';
 import MessageWithoutPoints from '../view/empty-points-list';
-import { render, renderPosition } from '../render .js';
+import { render, renderPosition } from '../render.js';
 import PointPresenter from './Point-presenter';
 import { updateItem } from '../common';
 
