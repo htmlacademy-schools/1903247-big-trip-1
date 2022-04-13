@@ -1,9 +1,7 @@
 import SortView from '../view/sort-view';
-// import PointView from '../view/point-view';
-// import OfferFormView from '../view/offer-form-view';
 import PointListView from '../view/point-list-view';
 import MessageWithoutPoints from '../view/empty-points-list';
-import { render, renderPosition } from '../render.js';
+import { render, renderPosition } from '../render .js';
 import PointPresenter from './Point-presenter';
 import { updateItem } from '../common';
 
@@ -15,8 +13,6 @@ export default class TripPresenter {
 
   #noPointsComponent = new MessageWithoutPoints();
   #sortComponent = new SortView();
-  // #pointComponent = new PointView();
-  // #pointEditedComponent = new OfferFormView();
   #pointListComponent = new PointListView();
 
 
@@ -58,10 +54,7 @@ export default class TripPresenter {
   }
 
   #sortPoints = (sortType) => {
-    // if (sortType === 'price') {
-    //   this.#boardPoints.price.value.sort((a, b) => b - a);
-    // }
-    switch(sortType) {
+    switch (sortType) {
       case SortType.PRICE.text:
         this.#boardPoints.sort(sortPointsByPrice);
         break;
@@ -87,14 +80,12 @@ export default class TripPresenter {
   }
 
   #clearPointList = () => {
-    this.#pointPresenter.forEach( (presenter) => presenter.destroy() );
+    this.#pointPresenter.forEach((presenter) => presenter.destroy());
     this.#pointPresenter.clear();
   }
 
   #renderSort = () => {
     render(this.#tripContainer, this.#sortComponent, renderPosition.AFTERBEGIN);
-    // this.#sortComponent.setDaySortClickHandler(this.#handleSortTypeChange);
-    // this.#sortComponent.setTimeSortClickHandler(this.#handleSortTypeChange);
     this.#sortComponent.setSortChengeClickHandler(this.#handleSortTypeChange);
   }
 

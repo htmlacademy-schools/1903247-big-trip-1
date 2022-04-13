@@ -44,13 +44,6 @@ export default class PointPresenter {
 
     render(this.#pointContainer, this.#pointComponent, renderPosition.BEFOREEND);
 
-    // if (this.#mode === Mode.DEFAULT && prevPointComponent) {
-    //   replace(this.#pointComponent, prevPointComponent);
-    // }
-    // if (this.#mode === Mode.EDITING && prevEditPointComponent) {
-    //   replace(this.#pointEditComponent, prevEditPointComponent);
-    // }
-
     remove(prevPointComponent);
     remove(prevEditPointComponent);
   }
@@ -86,7 +79,7 @@ export default class PointPresenter {
   }
 
   #handleFavorite = () => {
-    this.#changeData({...this.#point, isFavorite: !this.#point.isFavorite});
+    this.#changeData({ ...this.#point, isFavorite: !this.#point.isFavorite });
   }
 
   #handleFormSubmit = (task) => {

@@ -31,20 +31,10 @@ const CreateSortTemplate = (
   `);
 
 
-export default class SortView extends AbstractView{
+export default class SortView extends AbstractView {
   get template() {
     return CreateSortTemplate;
   }
-
-  // setTimeSortClickHandler = (callback) => {
-  //   this._callback.timeSortClick = callback;
-  //   document.querySelector('.trip-sort__item--time').addEventListener('click', this.#timeSortClickHandler);
-  // }
-
-  // #timeSortClickHandler = (evt) => {
-  //   evt.preventDefault();
-  //   this._callback.timeSortClick();
-  // }
 
   setSortChengeClickHandler = (callback) => {
     this._callback.sortChange = callback;
@@ -56,14 +46,4 @@ export default class SortView extends AbstractView{
       this._callback.sortChange(evt.target.dataset.sortType);
     }
   }
-
-  // setDaySortClickHandler = (callback) => {
-  //   this._callback.daySortClick = callback;
-  //   document.querySelector('.trip-sort__item--day').addEventListener('click', this.#daySortClickHandler);
-  // }
-
-  // #daySortClickHandler = (evt) => {
-  //   evt.preventDefault();
-  //   this._callback.daySortClick();
-  // }
 }
