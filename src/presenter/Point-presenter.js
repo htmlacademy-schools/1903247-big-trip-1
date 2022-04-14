@@ -61,6 +61,11 @@ export default class PointPresenter {
     }
   }
 
+  destroy = () => {
+    remove(this.#pointComponent);
+    remove(this.#pointEditComponent);
+  }
+
   #replacePointToForm = () => {
     replace(this.#pointEditComponent, this.#pointComponent);
     this.#changeMode();
@@ -81,7 +86,7 @@ export default class PointPresenter {
   }
 
   #handleFavorite = () => {
-    this.#changeData({...this.#point, isFavorite: !this.#point.isFavorite});
+    this.#changeData({ ...this.#point, isFavorite: !this.#point.isFavorite });
   }
 
   #handleFormSubmit = (task) => {
