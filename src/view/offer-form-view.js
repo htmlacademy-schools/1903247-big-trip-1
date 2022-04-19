@@ -1,4 +1,5 @@
 import AbstractView from './abstract-view';
+import SmartView from './smart-view';
 
 const createOfferForm = (point) => {
   const {pointType, destination, destinationInfo} = point;
@@ -167,7 +168,7 @@ const createOfferForm = (point) => {
     </li>`;
 };
 
-export default class OfferFormView extends AbstractView {
+export default class OfferFormView extends SmartView {
   #point = null;
 
   constructor(point) {
@@ -187,5 +188,13 @@ export default class OfferFormView extends AbstractView {
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
     this._callback.formSubmit(this.#point);
+  }
+
+  static parsePointToData = (point) => {
+    //isFavorite: point.isFavorite !== null;
+  }
+
+  static parseDataToPoint = (data) => {
+
   }
 }
