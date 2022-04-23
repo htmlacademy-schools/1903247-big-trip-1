@@ -3,10 +3,6 @@ import AbstractView from './abstract-view';
 class SmartView extends AbstractView {
   _data = {}
 
-  #restoreHandlers = () => {
-    throw new Error('Abstract nethod not implemented');
-  }
-
   updateElement = () => {
     const prevElement = this.element;
     const parent = prevElement.parentElement;
@@ -15,7 +11,7 @@ class SmartView extends AbstractView {
     const newElement = this.element;
 
     parent.replaceChild(newElement, prevElement);
-    this.#restoreHandlers();
+    this.restoreHandlers();
   }
 
   updateData = (update, justDataUpdating) => {
@@ -29,6 +25,10 @@ class SmartView extends AbstractView {
     }
 
     this.updateElement();
+  }
+
+  restoreHandlers = () => {
+    throw new Error('Abstract nethod not implemented: restoreHandlers');
   }
 }
 

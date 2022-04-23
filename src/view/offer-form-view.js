@@ -1,8 +1,39 @@
-import AbstractView from './abstract-view';
 import SmartView from './smart-view';
+import { render, renderPosition } from '../render';
 
-const createOfferForm = (point) => {
-  const {pointType, destination, destinationInfo} = point;
+const BLANK_POINT = {
+  destination: '',
+  description: '',
+  time: null,
+  price: '',
+  isFavorite: false
+};
+
+// createPointEditDestinationTemplate = (destination, isPointDestination) => {
+
+// };
+
+const createPointEditOffersTemplate = (pointType, offers) => {
+  const offerListInPoint =  document.querySelector('.event__available-offers');
+  for (const offer of offers[pointType]) {
+    return `<div class="event__offer-selector">
+    <input class="event__offer-checkbox  visually-hidden"  type="checkbox" name="event-offer-luggage">
+    <label class="event__offer-label" for="event-offer-luggage-1">
+      <span class="event__offer-title">${offer.title}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${offer.price}</span>
+    </label>
+  </div>`;
+
+    //render(offerListInPoint, offerItem, renderPosition.BEFOREEND);
+  }
+}
+
+const createOfferForm = (data) => {
+  const { pointType, destination, price, destinationInfo, isPointDestination, offers } = data;
+  const offersOfType = offers[pointType];
+  //const checked = isChecked ? 'checked' : '';
+  //const inputType = document.
 
   return `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
@@ -19,47 +50,47 @@ const createOfferForm = (point) => {
                 <legend class="visually-hidden">Event type</legend>
 
                 <div class="event__type-item">
-                  <input id="event-type-taxi-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="taxi">
+                  <input ${pointType === 'taxi' ? 'checked' : ''} id="event-type-taxi-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="taxi" >
                   <label class="event__type-label  event__type-label--taxi" for="event-type-taxi-1">Taxi</label>
                 </div>
 
                 <div class="event__type-item">
-                  <input id="event-type-bus-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="bus">
+                  <input ${pointType === 'bus' ? 'checked' : ''} id="event-type-bus-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="bus">
                   <label class="event__type-label  event__type-label--bus" for="event-type-bus-1">Bus</label>
                 </div>
 
                 <div class="event__type-item">
-                  <input id="event-type-train-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="train">
+                  <input ${pointType === 'train' ? 'checked' : ''} id="event-type-train-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="train">
                   <label class="event__type-label  event__type-label--train" for="event-type-train-1">Train</label>
                 </div>
 
                 <div class="event__type-item">
-                  <input id="event-type-ship-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="ship">
+                  <input ${pointType === 'ship' ? 'checked' : ''} id="event-type-ship-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="ship">
                   <label class="event__type-label  event__type-label--ship" for="event-type-ship-1">Ship</label>
                 </div>
 
                 <div class="event__type-item">
-                  <input id="event-type-drive-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="drive">
+                  <input ${pointType === 'drive' ? 'checked' : ''} id="event-type-drive-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="drive">
                   <label class="event__type-label  event__type-label--drive" for="event-type-drive-1">Drive</label>
                 </div>
 
                 <div class="event__type-item">
-                  <input id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight" checked>
+                  <input ${pointType === 'flight' ? 'checked' : ''} id="event-type-flight-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="flight">
                   <label class="event__type-label  event__type-label--flight" for="event-type-flight-1">Flight</label>
                 </div>
 
                 <div class="event__type-item">
-                  <input id="event-type-check-in-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="check-in">
+                  <input ${pointType === 'check in' ? 'checked' : ''} id="event-type-check-in-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="check-in">
                   <label class="event__type-label  event__type-label--check-in" for="event-type-check-in-1">Check-in</label>
                 </div>
 
                 <div class="event__type-item">
-                  <input id="event-type-sightseeing-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="sightseeing">
+                  <input ${pointType === 'sightseeing' ? 'checked' : ''} id="event-type-sightseeing-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="sightseeing">
                   <label class="event__type-label  event__type-label--sightseeing" for="event-type-sightseeing-1">Sightseeing</label>
                 </div>
 
                 <div class="event__type-item">
-                  <input id="event-type-restaurant-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="restaurant">
+                  <input ${pointType === 'restaraunt' ? 'checked' : ''} id="event-type-restaurant-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="restaurant">
                   <label class="event__type-label  event__type-label--restaurant" for="event-type-restaurant-1">Restaurant</label>
                 </div>
               </fieldset>
@@ -91,65 +122,23 @@ const createOfferForm = (point) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="">
+            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
           <button class="event__reset-btn" type="reset">Cancel</button>
         </header>
         <section class="event__details">
-          <section class="event__section  event__section--offers">
+
+          ${offersOfType.length !== 0 ? `<section class="event__section  event__section--offers">
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
             <div class="event__available-offers">
-              <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
-                <label class="event__offer-label" for="event-offer-luggage-1">
-                  <span class="event__offer-title">Add luggage</span>
-                  &plus;&euro;&nbsp;
-                  <span class="event__offer-price">30</span>
-                </label>
-              </div>
-
-              <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-comfort-1" type="checkbox" name="event-offer-comfort" checked>
-                <label class="event__offer-label" for="event-offer-comfort-1">
-                  <span class="event__offer-title">Switch to comfort class</span>
-                  &plus;&euro;&nbsp;
-                  <span class="event__offer-price">100</span>
-                </label>
-              </div>
-
-              <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-meal-1" type="checkbox" name="event-offer-meal">
-                <label class="event__offer-label" for="event-offer-meal-1">
-                  <span class="event__offer-title">Add meal</span>
-                  &plus;&euro;&nbsp;
-                  <span class="event__offer-price">15</span>
-                </label>
-              </div>
-
-              <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-seats-1" type="checkbox" name="event-offer-seats">
-                <label class="event__offer-label" for="event-offer-seats-1">
-                  <span class="event__offer-title">Choose seats</span>
-                  &plus;&euro;&nbsp;
-                  <span class="event__offer-price">5</span>
-                </label>
-              </div>
-
-              <div class="event__offer-selector">
-                <input class="event__offer-checkbox  visually-hidden" id="event-offer-train-1" type="checkbox" name="event-offer-train">
-                <label class="event__offer-label" for="event-offer-train-1">
-                  <span class="event__offer-title">Travel by train</span>
-                  &plus;&euro;&nbsp;
-                  <span class="event__offer-price">40</span>
-                </label>
-              </div>
+              ${createPointEditOffersTemplate(pointType, offers)}
             </div>
-          </section>
+          </section>` : ''}
 
-          <section class="event__section  event__section--destination">
+          ${isPointDestination ? `<section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
             <p class="event__destination-description">${destinationInfo.description}</p>
 
@@ -162,22 +151,56 @@ const createOfferForm = (point) => {
                 <img class="event__photo" src="${destinationInfo.pictures[4]}" alt="Event photo">
               </div>
             </div>
-          </section>
+          </section>` : ''}
+
+
         </section>
       </form>
     </li>`;
 };
 
 export default class OfferFormView extends SmartView {
-  #point = null;
+  //#point = null;
 
   constructor(point) {
     super();
-    this.#point = point;
+    //this.#point = point;
+    this._data = OfferFormView.parsePointToData(point);
+    this.#setInnerHandlers();
   }
 
   get template() {
-    return createOfferForm(this.#point);
+    return createOfferForm(this._data);
+  }
+
+  reset = (point) => {
+    this.updateData(OfferFormView.parsePointToData(point));
+  }
+
+  restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+  }
+
+  #setInnerHandlers = () => {
+    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationInputHandler);
+    this.element.querySelectorAll('.event__type-input').forEach((element) => {
+      element.addEventListener('click', this.#pointTypeHandler);
+    });
+  }
+
+  #destinationInputHandler = (evt) => {
+    evt.preventDefault();
+    this.updateData({
+      destination: evt.target.value  //!this._data.isPointDestination
+    }, true);
+  }
+
+  #pointTypeHandler = (evt) => {
+    evt.preventDefault();
+    this.updateData({
+      pointType: evt.target.value
+    });
   }
 
   setFormSubmitHandler = (callback) => {
@@ -187,14 +210,26 @@ export default class OfferFormView extends SmartView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.formSubmit(this.#point);
+    this._callback.formSubmit(OfferFormView.parseDataToPoint(this._data));
   }
 
-  static parsePointToData = (point) => {
+
+  static parsePointToData = (point) => ({
+    ...point,
     //isFavorite: point.isFavorite !== null;
-  }
+    isPointDestination: point.destination !== null,
+    //isPointOffers: point.offers.offer !== null,
+  });
 
   static parseDataToPoint = (data) => {
+    const point = { ...data };
 
+    if (!point.isPointDestination) {
+      point.destination = null;
+    }
+
+    delete point.isPointDestination;
+
+    return point;
   }
 }

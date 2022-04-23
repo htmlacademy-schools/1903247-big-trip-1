@@ -34,12 +34,25 @@ const generateDestinationCity = () => {
 };
 
 const generateOffers = () => {
-  const offers = [];
-  for (let i = 0; i < getRandomIntInclusive(0, 5); i++) {
-    offers.push({ id: i, title: 'example title', price: getRandomIntInclusive(10, 100) });
-  }
+  // const offers = [];
+  // for (let i = 0; i < getRandomIntInclusive(0, 5); i++) {
+  //   offers.push({ id: i, title: 'example title', price: getRandomIntInclusive(10, 100) });
+  // }
 
-  return offers;
+  // return offers;
+
+};
+
+const offersByType = {
+  'taxi': [{title: 'call business class', price: '10'}, {title: 'add seats', price: '5'}],
+  'bus': [],
+  'train': [{title: 'add linens', price: '5'}, {title: 'choose coupe', price: '15'}, {title: 'add food', price:'15'}],
+  'ship': [{title: 'add luggage', price: '30'}, {title: 'take a tour', price: '20'}, {title: 'add dinner', price: '15'}, {title: 'fishing', price: 40}],
+  'drive': [{title: 'refueling', price: '20'}, {title: 'add trailer', price: '100'}],
+  'flight': [{title: 'add luggage', price: '30'}, {title: 'switch to comfort class', price: '40'}, {title: 'add meal', price: '15'}, {title: 'choose seat', price: '10'}, {title: 'travel by train', price: '40'}],
+  'check-in': [{title: 'switch to comfort class', price: '40'}, {title: 'add meal', price: '15'}, {title: 'choose seat', price: '10'}],
+  'sightseeing': [],
+  'restaurant': [{title: 'add meal', price: '15'}, {title: 'take tips', price: '5'}, {title: 'asjdfjasdf', price: '234'}]
 };
 
 const generatePictures = () => {
@@ -77,15 +90,12 @@ export const generatePoint = () => {
     id: nanoid(),
     price: getRandomIntInclusive(5, 200),
     destination: generateDestinationCity(),
-    offer: {
-      type: pointType,
-      offers: generateOffers(),
-    },
+    offers: offersByType,
     destinationInfo: {
       description: generateDescription(),
       pictures: generatePictures()
     },
-    isFavorite: false,
+    isFavorite: Boolean(getRandomIntInclusive(0, 1)),
     waitingTime: waitingTime,
     period: getTimePeriod(waitingTime)
   };

@@ -1,7 +1,21 @@
 import AbstractView from './abstract-view.js';
 
+// const createOffersTemplate = (offer) => {
+//   const offerList = document.querySelector('.event__selected-offers');
+//   if (offer.offers.length !== 0) {
+//     for (let i = 0; i <= offer.offers.length; i++) {
+
+//       offerList.insertAdjacentHTML('afterbegin', `<li class="event__offer">
+//       <span class="event__offer-title">${offer.offers[i].title} </span>
+//       &plus;&euro;&nbsp;
+//       <span class="event__offer-price">${offer.offers[i].price}</span>
+//     </li>`);
+//     }
+//   }
+// };
+
 const createPointTemplate = (point) => {
-  const {pointType, price, destination, offer, isFavorite, waitingTime, period} = point;
+  const { pointType, price, destination, offer, isFavorite, waitingTime, period } = point;
 
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn event__favorite-btn--active'
@@ -27,11 +41,7 @@ const createPointTemplate = (point) => {
           </p>
           <h4 class="visually-hidden">Offers:</h4>
           <ul class="event__selected-offers">
-            <li class="event__offer">
-              <span class="event__offer-title">${offer.offers[0].title !== null ? offer.offers[0].title : ''} </span>
-              &plus;&euro;&nbsp;
-              <span class="event__offer-price">${offer.offers[0].price !== null ? offer.offers[0].price : ''}</span>
-            </li>
+
           </ul>
           <button class="${favoriteClassName}" type="button">
             <span class="visually-hidden">Add to favorite</span>
@@ -47,7 +57,7 @@ const createPointTemplate = (point) => {
 `;
 };
 
-export default class PointView extends AbstractView{
+export default class PointView extends AbstractView {
   #point = null;
 
   constructor(point) {
