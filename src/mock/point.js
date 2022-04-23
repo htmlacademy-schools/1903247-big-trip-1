@@ -33,16 +33,6 @@ const generateDestinationCity = () => {
   return cities[getRandomIntInclusive(0, cities.length - 1)];
 };
 
-const generateOffers = () => {
-  // const offers = [];
-  // for (let i = 0; i < getRandomIntInclusive(0, 5); i++) {
-  //   offers.push({ id: i, title: 'example title', price: getRandomIntInclusive(10, 100) });
-  // }
-
-  // return offers;
-
-};
-
 const offersByType = {
   'taxi': [{title: 'call business class', price: '10'}, {title: 'add seats', price: '5'}],
   'bus': [],

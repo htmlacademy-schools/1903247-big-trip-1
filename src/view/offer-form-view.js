@@ -1,20 +1,11 @@
 import SmartView from './smart-view';
-import { render, renderPosition } from '../render';
-
-const BLANK_POINT = {
-  destination: '',
-  description: '',
-  time: null,
-  price: '',
-  isFavorite: false
-};
 
 // createPointEditDestinationTemplate = (destination, isPointDestination) => {
 
 // };
 
 const createPointEditOffersTemplate = (pointType, offers) => {
-  const offerListInPoint =  document.querySelector('.event__available-offers');
+  //const offerListInPoint =  document.querySelector('.event__available-offers');
   for (const offer of offers[pointType]) {
     return `<div class="event__offer-selector">
     <input class="event__offer-checkbox  visually-hidden"  type="checkbox" name="event-offer-luggage">
@@ -27,13 +18,11 @@ const createPointEditOffersTemplate = (pointType, offers) => {
 
     //render(offerListInPoint, offerItem, renderPosition.BEFOREEND);
   }
-}
+};
 
 const createOfferForm = (data) => {
   const { pointType, destination, price, destinationInfo, isPointDestination, offers } = data;
   const offersOfType = offers[pointType];
-  //const checked = isChecked ? 'checked' : '';
-  //const inputType = document.
 
   return `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
@@ -216,9 +205,7 @@ export default class OfferFormView extends SmartView {
 
   static parsePointToData = (point) => ({
     ...point,
-    //isFavorite: point.isFavorite !== null;
     isPointDestination: point.destination !== null,
-    //isPointOffers: point.offers.offer !== null,
   });
 
   static parseDataToPoint = (data) => {
