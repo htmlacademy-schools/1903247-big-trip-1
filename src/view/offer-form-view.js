@@ -1,4 +1,7 @@
 import SmartView from './smart-view';
+import flatpickr from 'flatpickr';
+
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 // createPointEditDestinationTemplate = (destination, isPointDestination) => {
 
@@ -23,6 +26,9 @@ const createPointEditOffersTemplate = (pointType, offers) => {
 const createOfferForm = (data) => {
   const { pointType, destination, price, destinationInfo, isPointDestination, offers } = data;
   const offersOfType = offers[pointType];
+
+  let eventStartTime;
+  let eventEndTime;
 
   return `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
@@ -149,17 +155,27 @@ const createOfferForm = (data) => {
 };
 
 export default class OfferFormView extends SmartView {
-  //#point = null;
+  #datepicker = null;
 
   constructor(point) {
     super();
     //this.#point = point;
     this._data = OfferFormView.parsePointToData(point);
     this.#setInnerHandlers();
+    this.#setDatepickerStart();
   }
 
   get template() {
     return createOfferForm(this._data);
+  }
+
+  removeElement = () => {
+    super.removeElement();
+
+    if (this.#datepicker) {
+      this.#datepicker.destroy();
+      this.#datepicker = null;
+    }
   }
 
   reset = (point) => {
@@ -168,6 +184,8 @@ export default class OfferFormView extends SmartView {
 
   restoreHandlers = () => {
     this.#setInnerHandlers();
+    this.#setDatepickerStart();
+    this.#setDatepickerEnd();
     this.setFormSubmitHandler(this._callback.formSubmit);
   }
 
@@ -182,7 +200,7 @@ export default class OfferFormView extends SmartView {
     evt.preventDefault();
     this.updateData({
       destination: evt.target.value  //!this._data.isPointDestination
-    }, true);
+    });
   }
 
   #pointTypeHandler = (evt) => {
@@ -195,6 +213,36 @@ export default class OfferFormView extends SmartView {
   setFormSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
     this.element.querySelector('.event--edit').addEventListener('submit', this.#formSubmitHandler);
+  }
+
+  #setDatepickerStart = () => {
+    this.#datepicker = flatpickr(
+      this.element.querySelector('#event-start-time-1'),
+      {
+        dateFormat: 'd/m/Y H:i',
+        enableTime: true,
+        //defaultDate: this._data.
+        onChange: this.#dueDateChangeHander,
+      }
+    );
+  }
+
+  #setDatepickerEnd = () => {
+    this.#datepicker = flatpickr(
+      this.element.querySelector('#event-end-time-1'),
+      {
+        dateFormat: 'd/m/Y H:i',
+        enableTime: true,
+        //defaultDate: this._data.
+        onChange: this.#dueDateChangeHander,
+      }
+    );
+  }
+
+  #dueDateChangeHander = ([userDate]) => {
+    this.updateData({
+      dueDate: userDate,
+    });
   }
 
   #formSubmitHandler = (evt) => {
