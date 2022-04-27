@@ -1,4 +1,4 @@
-import AbstractView from './abstract-view.js';
+import SmartView from './smart-view.js';
 
 // const createOffersTemplate = (offer) => {
 //   const offerList = document.querySelector('.event__selected-offers');
@@ -57,7 +57,7 @@ const createPointTemplate = (point) => {
 `;
 };
 
-export default class PointView extends AbstractView {
+export default class PointView extends SmartView {
   #point = null;
 
   constructor(point) {

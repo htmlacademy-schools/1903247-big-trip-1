@@ -3,9 +3,6 @@ import flatpickr from 'flatpickr';
 import dayjs from 'dayjs';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
-// createPointEditDestinationTemplate = (destination, isPointDestination) => {
-
-// };
 let id = 0;
 
 const createPointEditOffersTemplate = (offer) => {
@@ -162,7 +159,6 @@ export default class OfferFormView extends SmartView {
 
   constructor(point) {
     super();
-    //this.#point = point;
     this._data = OfferFormView.parsePointToData(point);
     this.#setInnerHandlers();
     this.#setDatepickerStart();
@@ -251,7 +247,7 @@ export default class OfferFormView extends SmartView {
   }
 
   #endDueDateChangeHandler = ([userDate]) => {
-    this.updateData({endEventDate: userDate});
+    this.updateData({ endEventDate: userDate });
   }
 
   #formSubmitHandler = (evt) => {

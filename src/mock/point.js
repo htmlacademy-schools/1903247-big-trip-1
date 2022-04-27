@@ -71,7 +71,7 @@ const getWaitingTime = () => {
 };
 
 const getDate = () => {
-  let day = dayjs(new Date());
+  const day = dayjs(new Date());
   day.add(getRandomIntInclusive(0, 8), 'day');
   day.add(getRandomIntInclusive(0, 24), 'hour');
 
