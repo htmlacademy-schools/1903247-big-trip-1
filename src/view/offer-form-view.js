@@ -1,34 +1,35 @@
 import SmartView from './smart-view';
 import flatpickr from 'flatpickr';
-
+import dayjs from 'dayjs';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 // createPointEditDestinationTemplate = (destination, isPointDestination) => {
 
 // };
+let id = 0;
 
-const createPointEditOffersTemplate = (pointType, offers) => {
-  //const offerListInPoint =  document.querySelector('.event__available-offers');
-  for (const offer of offers[pointType]) {
-    return `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden"  type="checkbox" name="event-offer-luggage">
-    <label class="event__offer-label" for="event-offer-luggage-1">
-      <span class="event__offer-title">${offer.title}</span>
-      &plus;&euro;&nbsp;
-      <span class="event__offer-price">${offer.price}</span>
-    </label>
-  </div>`;
-
-    //render(offerListInPoint, offerItem, renderPosition.BEFOREEND);
-  }
+const createPointEditOffersTemplate = (offer) => {
+  id += 1;
+  return `<div class="event__offer-selector">
+  <input class="event__offer-checkbox  visually-hidden"  type="checkbox" name="event-offer-luggage" id="${offer.title + id}">
+  <label class="event__offer-label" for="${offer.title + id}">
+    <span class="event__offer-title">${offer.title}</span>
+    &plus; <span class="event__offer-price">${offer.price}</span>&euro;&nbsp;
+  </label>
+</div>`;
 };
 
+
 const createOfferForm = (data) => {
-  const { pointType, destination, price, destinationInfo, isPointDestination, offers } = data;
+  const { pointType, destination, price, destinationInfo, isPointDestination, offers, startEventDate, endEventDate } = data;
   const offersOfType = offers[pointType];
 
-  let eventStartTime;
-  let eventEndTime;
+  let offersList = '';
+
+  offersOfType.forEach((offer) => {
+    const offerCurrent = createPointEditOffersTemplate(offer);
+    offersList += offerCurrent;
+  });
 
   return `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
@@ -98,18 +99,21 @@ const createOfferForm = (data) => {
             </label>
             <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1">
             <datalist id="destination-list-1">
-              <option value="Amsterdam"></option>
-              <option value="Geneva"></option>
-              <option value="Chamonix"></option>
+              <option value="Ekaterinburg"></option>
+              <option value="Moscow"></option>
+              <option value="Perm"></option>
+              <option value="Kyiv"></option>
+              <option value="Paris"></option>
+              <option value="Prague"></option>
             </datalist>
           </div>
 
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="19/03/19 00:00">
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(startEventDate).format('DD/MM/YY H:m')}">
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="19/03/19 00:00">
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(endEventDate).format('DD/MM/YY H:m')}">
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -127,9 +131,8 @@ const createOfferForm = (data) => {
 
           ${offersOfType.length !== 0 ? `<section class="event__section  event__section--offers">
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
             <div class="event__available-offers">
-              ${createPointEditOffersTemplate(pointType, offers)}
+              ${offersList}
             </div>
           </section>` : ''}
 
@@ -163,6 +166,7 @@ export default class OfferFormView extends SmartView {
     this._data = OfferFormView.parsePointToData(point);
     this.#setInnerHandlers();
     this.#setDatepickerStart();
+    this.#setDatepickerEnd();
   }
 
   get template() {
@@ -199,7 +203,7 @@ export default class OfferFormView extends SmartView {
   #destinationInputHandler = (evt) => {
     evt.preventDefault();
     this.updateData({
-      destination: evt.target.value  //!this._data.isPointDestination
+      destination: evt.target.value
     });
   }
 
@@ -219,30 +223,35 @@ export default class OfferFormView extends SmartView {
     this.#datepicker = flatpickr(
       this.element.querySelector('#event-start-time-1'),
       {
-        dateFormat: 'd/m/Y H:i',
+        dateFormat: 'd/m/y H:i',
         enableTime: true,
-        //defaultDate: this._data.
-        onChange: this.#dueDateChangeHander,
+        defaultDate: this._data.startEventDate,
+        onChange: this.#startDueDateChangeHander,
       }
     );
   }
 
   #setDatepickerEnd = () => {
+    const minDate = this._data.startEventDate;
     this.#datepicker = flatpickr(
       this.element.querySelector('#event-end-time-1'),
       {
-        dateFormat: 'd/m/Y H:i',
+        dateFormat: 'd/m/y H:i',
         enableTime: true,
-        //defaultDate: this._data.
-        onChange: this.#dueDateChangeHander,
+        minDate: minDate,
+        onChange: this.#endDueDateChangeHandler
       }
     );
   }
 
-  #dueDateChangeHander = ([userDate]) => {
+  #startDueDateChangeHander = ([userDate]) => {
     this.updateData({
-      dueDate: userDate,
+      startEventDate: userDate
     });
+  }
+
+  #endDueDateChangeHandler = ([userDate]) => {
+    this.updateData({endEventDate: userDate});
   }
 
   #formSubmitHandler = (evt) => {
