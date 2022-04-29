@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-//import dayjs from 'dayjs';
+import dayjs from 'dayjs';
 
 const getRandomIntInclusive = (min, max) => {
   min = Math.ceil(min);
@@ -70,6 +70,14 @@ const getWaitingTime = () => {
   return randomNumber * 5;
 };
 
+const getDate = () => {
+  const day = dayjs(new Date());
+  day.add(getRandomIntInclusive(0, 8), 'day');
+  day.add(getRandomIntInclusive(0, 24), 'hour');
+
+  return day;
+};
+
 
 export const generatePoint = () => {
   const pointType = generatePointType();
@@ -87,6 +95,8 @@ export const generatePoint = () => {
     },
     isFavorite: Boolean(getRandomIntInclusive(0, 1)),
     waitingTime: waitingTime,
-    period: getTimePeriod(waitingTime)
+    period: getTimePeriod(waitingTime),
+    startEventDate: getDate(),
+    endEventDate: getDate()
   };
 };
