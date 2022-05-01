@@ -10,6 +10,7 @@ import { SortType, sortPointsByPrice, sortPointsByTime } from '../utils/sort-fun
 
 export default class TripPresenter {
   #tripContainer = null;
+  #pointsModel = null;
 
   #noPointsComponent = new MessageWithoutPoints();
   #sortComponent = new SortView();
@@ -21,8 +22,14 @@ export default class TripPresenter {
   #sourceBoardPoints = [];
   #currentSortType = null;
 
-  constructor(tripContainer) {
+  constructor(tripContainer, pointsModel) {
     this.#tripContainer = tripContainer;
+    this.#pointsModel = pointsModel;
+
+  }
+
+  get points() {
+    return this.#pointsModel.points;
   }
 
   init = (boardPoints) => {
