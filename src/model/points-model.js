@@ -1,6 +1,6 @@
 import AbstractObservable from '../utils/abstract-observers';
 
-class PointsModels extends AbstractObservable{
+class PointsModels extends AbstractObservable {
   #points = [];
 
   set points(points) {

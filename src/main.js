@@ -29,4 +29,4 @@ render(siteMenuElement, new SiteMenuView(), renderPosition.BEFOREEND);
 render(filtersElement, new FilterView(), renderPosition.BEFOREEND);
 
 
-tripPresenter.init(points);
+tripPresenter.init();
