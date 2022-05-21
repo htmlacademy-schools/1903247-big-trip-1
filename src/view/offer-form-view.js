@@ -122,7 +122,11 @@ const createOfferForm = (data) => {
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Cancel</button>
+
+          <button class="event__reset-btn" type="reset">Delete</button>
+                  <button class="event__rollup-btn" type="button">
+                    <span class="visually-hidden">Open event</span>
+                  </button>
         </header>
         <section class="event__details">
 
@@ -187,6 +191,7 @@ export default class OfferFormView extends SmartView {
     this.#setDatepickerStart();
     this.#setDatepickerEnd();
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   #setInnerHandlers = () => {
@@ -213,6 +218,11 @@ export default class OfferFormView extends SmartView {
   setFormSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
     this.element.querySelector('.event--edit').addEventListener('submit', this.#formSubmitHandler);
+  }
+
+  setDeleteClickHandler = (callback) => {
+    this._callback.deleteClick = callback;
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
   }
 
   #setDatepickerStart = () => {
@@ -255,6 +265,10 @@ export default class OfferFormView extends SmartView {
     this._callback.formSubmit(OfferFormView.parseDataToPoint(this._data));
   }
 
+  #formDeleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.deleteClick(OfferFormView.parseDataToPoint(this._data));
+  }
 
   static parsePointToData = (point) => ({
     ...point,

@@ -1,10 +1,11 @@
 import SortView from '../view/sort-view';
 import PointListView from '../view/point-list-view';
 import MessageWithoutPoints from '../view/empty-points-list';
-import { render, renderPosition } from '../render.js';
+import { remove, render, renderPosition } from '../render.js';
 import PointPresenter from './Point-presenter';
 
 import { SortType, sortPointsByPrice, sortPointsByTime } from '../utils/sort-functions';
+import { UpdateType, UserAction } from '../const';
 
 
 export default class TripPresenter {
@@ -12,17 +13,20 @@ export default class TripPresenter {
   #pointsModel = null;
 
   #noPointsComponent = new MessageWithoutPoints();
-  #sortComponent = new SortView();
+  #sortComponent = null;
   #pointListComponent = new PointListView();
 
 
   #pointPresenter = new Map();
   #currentSortType = null;
 
+  #renderedTotalPrice = 0;
+
   constructor(tripContainer, pointsModel) {
     this.#tripContainer = tripContainer;
     this.#pointsModel = pointsModel;
 
+    this.#pointsModel.addObserver(this.#handleModeEvent);
   }
 
   get points() {
@@ -43,6 +47,39 @@ export default class TripPresenter {
     this.#renderBoard();
   }
 
+  #handleModeEvent = (updateType, data) => {
+    console.log(updateType, data);
+
+    switch (updateType) {
+      case UpdateType.PATCH:
+        this.#pointPresenter.get(data.id).init(data);
+        break;
+      case UpdateType.MINOR:
+        this.#clearBoard();
+        this.#renderBoard();
+        break;
+      case UpdateType.MAJOR:
+        this.#clearBoard({resetRenderedTotalPrice: true, resetSortType: true});
+        this.#renderBoard();
+        break;
+    }
+  }
+
+  #handleViewAction = (actionType, updateType, update) => {
+    console.log(actionType, updateType, update);
+
+    switch (actionType) {
+      case UserAction.UPDATE_POINT:
+        this.#pointsModel.updatePoint(updateType, update);
+        break;
+      case UserAction.ADD_POINT:
+        this.#pointsModel.addPoint(updateType, update);
+        break;
+      case UserAction.DELETE_POINT:
+        this.#pointsModel.deletePoint(updateType, update);
+    }
+  }
+
   #handleModeChange = () => {
     this.#pointPresenter.forEach((element) => element.resetView());
   }
@@ -57,8 +94,10 @@ export default class TripPresenter {
     }
 
     this.#currentSortType = sortType;
-    this.#clearPointList();
-    this.#renderPoints(this.points);
+    // this.#clearPointList();
+    // this.#renderPoints(this.points);
+    this.#clearBoard();
+    this.#renderBoard();
   }
 
   // #sortPoints = (sortType) => {
@@ -77,7 +116,7 @@ export default class TripPresenter {
   // }
 
   #renderPoint = (point) => {
-    const pointPresenter = new PointPresenter(this.#pointListComponent, this.#handlePointChange, this.#handleModeChange);
+    const pointPresenter = new PointPresenter(this.#pointListComponent, this.#handleViewAction, this.#handleModeChange);
     pointPresenter.init(point);
     this.#pointPresenter.set(point.id, pointPresenter);
   };
@@ -86,19 +125,37 @@ export default class TripPresenter {
     points.forEach((point) => this.#renderPoint(point));
   }
 
-  #clearPointList = () => {
-    this.#pointPresenter.forEach((presenter) => presenter.destroy());
-    this.#pointPresenter.clear();
-  }
-
   #renderSort = () => {
+    this.#sortComponent = new SortView(this.#currentSortType);
+
     render(this.#tripContainer, this.#sortComponent, renderPosition.AFTERBEGIN);
-    this.#sortComponent.setSortChengeClickHandler(this.#handleSortTypeChange);
+    this.#sortComponent.setSortChangeClickHandler(this.#handleSortTypeChange);
   }
 
 
   #renderNoPoints = () => {
     render(this.#tripContainer, this.#noPointsComponent, renderPosition.BEFOREEND);
+  }
+
+  #clearBoard = ({ resetRenderedTotalPrice = false, resetSortType = false } = {}) => {
+    const totalPointsPrice = 0;
+    //this.points.price.forEach((sum, price) => sum + price);
+
+    this.#pointPresenter.forEach((presenter) => presenter.destroy());
+    this.#pointPresenter.clear();
+
+    remove(this.#sortComponent);
+    remove(this.#noPointsComponent);
+
+    if (resetRenderedTotalPrice) {
+      this.#renderedTotalPrice = this.#renderedTotalPrice;
+    } else {
+      this.#renderedTotalPrice = Math.min(totalPointsPrice, this.#renderedTotalPrice);
+    }
+
+    if (resetSortType) {
+      this.#currentSortType = SortType.DAY;
+    }
   }
 
   #renderBoard = () => {

@@ -1,10 +1,12 @@
 import PointView from '../view/point-view';
 import OfferFormView from '../view/offer-form-view';
 import { remove, render, renderPosition, replace } from '../render.js';
+import { UpdateType, UserAction } from '../const';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
   EDITING: 'EDITING',
+  CREATION: 'CREATION'
 };
 
 export default class PointPresenter {
@@ -31,6 +33,9 @@ export default class PointPresenter {
 
     this.#pointComponent = new PointView(point);
     this.#pointEditComponent = new OfferFormView(point);
+
+    this.#pointEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
+
 
     this.#pointComponent.setEditClickHandler(() => {
       this.#replacePointToForm();
@@ -78,6 +83,12 @@ export default class PointPresenter {
     this.#mode = Mode.DEFAULT;
   }
 
+  #onArrowClick = () => {
+    if (this.#point.querySelector('.event__rollup-btn')) {
+      this.#replaceFormToPoint();
+    }
+  }
+
   #onEscKeydowm = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
@@ -90,8 +101,29 @@ export default class PointPresenter {
     this.#changeData({ ...this.#point, isFavorite: !this.#point.isFavorite });
   }
 
-  #handleFormSubmit = (task) => {
-    this.#changeData(task);
+  #handleFormSubmit = (update) => {
+    const isMinorUpdate = 1;
+
+    this.#changeData(
+      UserAction.UPDATE_POINT,
+      isMinorUpdate ? UpdateType.MINOR: UpdateType.PATCH,
+      update
+    );
     this.#replaceFormToPoint();
+  }
+
+  #handleDeleteClick = (point) => {
+    this.#changeData(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
+  }
+
+  #handleNewPointClick = () => {
+    this.#changeData(
+      UserAction.ADD_POINT,
+      UpdateType.MINOR
+    );
   }
 }
