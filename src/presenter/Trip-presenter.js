@@ -6,6 +6,8 @@ import PointPresenter from './Point-presenter';
 
 import { SortType, sortPointsByPrice, sortPointsByTime } from '../utils/sort-functions';
 import { UpdateType, UserAction } from '../const';
+import PointNewPresenter from './Point-new-presenter';
+import { generatePoint } from '../mock/point';
 
 
 export default class TripPresenter {
@@ -18,6 +20,7 @@ export default class TripPresenter {
 
 
   #pointPresenter = new Map();
+  #pointNewPresenter = null;
   #currentSortType = null;
 
   #renderedTotalPrice = 0;
@@ -25,6 +28,8 @@ export default class TripPresenter {
   constructor(tripContainer, pointsModel) {
     this.#tripContainer = tripContainer;
     this.#pointsModel = pointsModel;
+
+    this.#pointNewPresenter = new PointNewPresenter(this.#pointListComponent, this.#handleViewAction);
 
     this.#pointsModel.addObserver(this.#handleModeEvent);
   }
@@ -47,9 +52,19 @@ export default class TripPresenter {
     this.#renderBoard();
   }
 
-  #handleModeEvent = (updateType, data) => {
-    console.log(updateType, data);
+  createNewPoint = () => {
+    const point = generatePoint();
+    point.destination = '';
+    point.pointType = 'taxi';
+    point.price = 0;
 
+    const createNewPointData = {...point, isCreatePoint: true};
+    this.#currentSortType = SortType.DAY;
+    //this.#handleModeChange();
+    this.#pointNewPresenter.init(createNewPointData);
+  }
+
+  #handleModeEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
         this.#pointPresenter.get(data.id).init(data);
@@ -66,8 +81,6 @@ export default class TripPresenter {
   }
 
   #handleViewAction = (actionType, updateType, update) => {
-    console.log(actionType, updateType, update);
-
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this.#pointsModel.updatePoint(updateType, update);
@@ -81,6 +94,7 @@ export default class TripPresenter {
   }
 
   #handleModeChange = () => {
+    this.#pointNewPresenter.destroy();
     this.#pointPresenter.forEach((element) => element.resetView());
   }
 
@@ -141,6 +155,7 @@ export default class TripPresenter {
     const totalPointsPrice = 0;
     //this.points.price.forEach((sum, price) => sum + price);
 
+    this.#pointNewPresenter.destroy();
     this.#pointPresenter.forEach((presenter) => presenter.destroy());
     this.#pointPresenter.clear();
 

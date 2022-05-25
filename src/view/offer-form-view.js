@@ -17,8 +17,9 @@ const createPointEditOffersTemplate = (offer) => {
 };
 
 
-const createOfferForm = (data) => {
-  const { pointType, destination, price, destinationInfo, isPointDestination, offers, startEventDate, endEventDate } = data;
+const createOfferForm = (data = {}) => {
+  const { pointType = 'taxi', destination = '', price = 0, destinationInfo, isPointDestination, offers = null, startEventDate, endEventDate } = data;
+
   const offersOfType = offers[pointType];
 
   let offersList = '';
@@ -137,7 +138,7 @@ const createOfferForm = (data) => {
             </div>
           </section>` : ''}
 
-          ${isPointDestination ? `<section class="event__section  event__section--destination">
+          ${destination !== '' ? `<section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
             <p class="event__destination-description">${destinationInfo.description}</p>
 
@@ -202,9 +203,9 @@ export default class OfferFormView extends SmartView {
   }
 
   #destinationInputHandler = (evt) => {
-    evt.preventDefault();
+    //evt.preventDefault();
     this.updateData({
-      destination: evt.target.value
+      destination: evt.target.value,
     });
   }
 
@@ -272,7 +273,7 @@ export default class OfferFormView extends SmartView {
 
   static parsePointToData = (point) => ({
     ...point,
-    isPointDestination: point.destination !== null,
+    //isPointDestination: point.destination !== null,
   });
 
   static parseDataToPoint = (data) => {
