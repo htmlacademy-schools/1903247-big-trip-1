@@ -2,7 +2,6 @@ import OfferFormView from '../view/offer-form-view';
 import { remove, render, renderPosition } from '../render';
 import { UpdateType, UserAction } from '../const';
 
-
 export default class PointNewPresenter {
   #pointContainer = null;
 
@@ -27,18 +26,18 @@ export default class PointNewPresenter {
     this.#pointEditComponent = new OfferFormView(this.#newPoint);
 
     this.#pointEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
-
-
-    this.#pointEditComponent.setFormSubmitHandler(() => {
-      document.removeEventListener('keydown', this.#onEscKeydowm);
-    });
+    this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
 
     render(this.#pointContainer, this.#pointEditComponent, renderPosition.AFTERBEGIN);
+
+    document.addEventListener('keydown', this.#onEscKeydowm);
   }
 
   destroy = () => {
     remove(this.#point);
     remove(this.#pointEditComponent);
+
+    document.removeEventListener('keydown', this.#onEscKeydowm);
   }
 
   #onEscKeydowm = (evt) => {
@@ -49,13 +48,12 @@ export default class PointNewPresenter {
   }
 
   #handleFormSubmit = (update) => {
-    const isMinorUpdate = false;
-
     this.#changeData(
-      UserAction.UPDATE_POINT,
-      isMinorUpdate ? UpdateType.MINOR: UpdateType.PATCH,
+      UserAction.ADD_POINT,
+      UpdateType.MINOR,
       update
     );
+    this.destroy();
   }
 
   #handleDeleteClick = () => {

@@ -1,48 +1,57 @@
 import SortView from '../view/sort-view';
 import PointListView from '../view/point-list-view';
-import MessageWithoutPoints from '../view/empty-points-list';
+import MessageWithoutPointsView from '../view/empty-points-list';
 import { remove, render, renderPosition } from '../render.js';
 import PointPresenter from './Point-presenter';
 
 import { SortType, sortPointsByPrice, sortPointsByTime } from '../utils/sort-functions';
-import { UpdateType, UserAction } from '../const';
+import { FilterType, UpdateType, UserAction } from '../const';
 import PointNewPresenter from './Point-new-presenter';
 import { generatePoint } from '../mock/point';
+import { filter } from '../utils/filter';
 
 
 export default class TripPresenter {
   #tripContainer = null;
   #pointsModel = null;
+  #filterModel = null;
 
-  #noPointsComponent = new MessageWithoutPoints();
+  #noPointsComponent = null;
   #sortComponent = null;
   #pointListComponent = new PointListView();
 
 
   #pointPresenter = new Map();
   #pointNewPresenter = null;
-  #currentSortType = null;
+  #currentSortType = SortType.DAY;
+  #filterType = FilterType.EVERYTHING;
 
   #renderedTotalPrice = 0;
 
-  constructor(tripContainer, pointsModel) {
+  constructor(tripContainer, pointsModel, filterModel) {
     this.#tripContainer = tripContainer;
     this.#pointsModel = pointsModel;
+    this.#filterModel = filterModel;
 
     this.#pointNewPresenter = new PointNewPresenter(this.#pointListComponent, this.#handleViewAction);
 
     this.#pointsModel.addObserver(this.#handleModeEvent);
+    this.#filterModel.addObserver(this.#handleModeEvent);
   }
 
   get points() {
+    this.#filterType = this.#filterModel.filter;
+    const points = this.#pointsModel.points;
+    const filteredPoints = filter[this.#filterType](points);
+
     switch (this.#currentSortType) {
       case SortType.PRICE.text:
-        return [... this.#pointsModel.points].sort(sortPointsByPrice);
+        return filteredPoints.sort(sortPointsByPrice);
       case SortType.TIME.text:
-        return [...this.#pointsModel.points].sort(sortPointsByTime);
+        return filteredPoints.sort(sortPointsByTime);
     }
-
-    return this.#pointsModel.points;
+    console.log(filteredPoints);
+    return filteredPoints;
   }
 
   init = () => {
@@ -60,7 +69,7 @@ export default class TripPresenter {
 
     const createNewPointData = {...point, isCreatePoint: true};
     this.#currentSortType = SortType.DAY;
-    //this.#handleModeChange();
+    this.#handleModeChange();
     this.#pointNewPresenter.init(createNewPointData);
   }
 
@@ -148,6 +157,7 @@ export default class TripPresenter {
 
 
   #renderNoPoints = () => {
+    this.#noPointsComponent = new MessageWithoutPointsView(this.#filterType);
     render(this.#tripContainer, this.#noPointsComponent, renderPosition.BEFOREEND);
   }
 
@@ -160,7 +170,10 @@ export default class TripPresenter {
     this.#pointPresenter.clear();
 
     remove(this.#sortComponent);
-    remove(this.#noPointsComponent);
+
+    if (this.#noPointsComponent) {
+      remove(this.#noPointsComponent);
+    }
 
     if (resetRenderedTotalPrice) {
       this.#renderedTotalPrice = this.#renderedTotalPrice;

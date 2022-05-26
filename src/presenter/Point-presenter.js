@@ -102,7 +102,7 @@ export default class PointPresenter {
   }
 
   #handleFormSubmit = (update) => {
-    const isMinorUpdate = 1;
+    const isMinorUpdate = false;
 
     this.#changeData(
       UserAction.UPDATE_POINT,

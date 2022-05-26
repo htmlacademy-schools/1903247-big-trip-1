@@ -9,3 +9,9 @@ export const UserAction = {
   ADD_POINT: 'ADD-POINT',
   DELETE_POINT: 'DELETE_POINT',
 };
+
+export const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PAST: 'past',
+};
