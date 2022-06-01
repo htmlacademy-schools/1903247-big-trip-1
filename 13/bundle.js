@@ -11,7 +11,8 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "UpdateType": () => (/* binding */ UpdateType),
-/* harmony export */   "UserAction": () => (/* binding */ UserAction)
+/* harmony export */   "UserAction": () => (/* binding */ UserAction),
+/* harmony export */   "FilterType": () => (/* binding */ FilterType)
 /* harmony export */ });
 const UpdateType = {
   PATCH: 'PATCH',
@@ -22,6 +23,11 @@ const UserAction = {
   UPDATE_POINT: 'UPDATE_POINT',
   ADD_POINT: 'ADD-POINT',
   DELETE_POINT: 'DELETE_POINT'
+};
+const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PAST: 'past'
 };
 
 /***/ }),
@@ -67,78 +73,99 @@ const generateDestinationCity = () => {
 const offersByType = {
   'taxi': [{
     title: 'call business class',
-    price: '10'
+    price: '10',
+    id: (0,nanoid__WEBPACK_IMPORTED_MODULE_1__.nanoid)()
   }, {
     title: 'add seats',
-    price: '5'
+    price: '5',
+    id: (0,nanoid__WEBPACK_IMPORTED_MODULE_1__.nanoid)()
   }],
   'bus': [],
   'train': [{
     title: 'add linens',
-    price: '5'
+    price: '5',
+    id: (0,nanoid__WEBPACK_IMPORTED_MODULE_1__.nanoid)()
   }, {
     title: 'choose coupe',
-    price: '15'
+    price: '15',
+    id: (0,nanoid__WEBPACK_IMPORTED_MODULE_1__.nanoid)()
   }, {
     title: 'add food',
-    price: '15'
+    price: '15',
+    id: (0,nanoid__WEBPACK_IMPORTED_MODULE_1__.nanoid)()
   }],
   'ship': [{
     title: 'add luggage',
-    price: '30'
+    price: '30',
+    id: (0,nanoid__WEBPACK_IMPORTED_MODULE_1__.nanoid)()
   }, {
     title: 'take a tour',
-    price: '20'
+    price: '20',
+    id: (0,nanoid__WEBPACK_IMPORTED_MODULE_1__.nanoid)()
   }, {
     title: 'add dinner',
-    price: '15'
+    price: '15',
+    id: (0,nanoid__WEBPACK_IMPORTED_MODULE_1__.nanoid)()
   }, {
     title: 'fishing',
     price: 40
   }],
   'drive': [{
     title: 'refueling',
-    price: '20'
+    price: '20',
+    id: (0,nanoid__WEBPACK_IMPORTED_MODULE_1__.nanoid)()
   }, {
     title: 'add trailer',
-    price: '100'
+    price: '100',
+    id: (0,nanoid__WEBPACK_IMPORTED_MODULE_1__.nanoid)()
   }],
   'flight': [{
     title: 'add luggage',
-    price: '30'
+    price: '30',
+    id: (0,nanoid__WEBPACK_IMPORTED_MODULE_1__.nanoid)()
   }, {
     title: 'switch to comfort class',
-    price: '40'
+    price: '40',
+    id: (0,nanoid__WEBPACK_IMPORTED_MODULE_1__.nanoid)()
   }, {
     title: 'add meal',
-    price: '15'
+    price: '15',
+    id: (0,nanoid__WEBPACK_IMPORTED_MODULE_1__.nanoid)()
   }, {
     title: 'choose seat',
-    price: '10'
+    price: '10',
+    id: (0,nanoid__WEBPACK_IMPORTED_MODULE_1__.nanoid)()
   }, {
     title: 'travel by train',
-    price: '40'
+    price: '40',
+    id: (0,nanoid__WEBPACK_IMPORTED_MODULE_1__.nanoid)()
   }],
   'check-in': [{
     title: 'switch to comfort class',
-    price: '40'
+    price: '40',
+    id: (0,nanoid__WEBPACK_IMPORTED_MODULE_1__.nanoid)()
   }, {
     title: 'add meal',
-    price: '15'
+    price: '15',
+    id: (0,nanoid__WEBPACK_IMPORTED_MODULE_1__.nanoid)()
   }, {
     title: 'choose seat',
-    price: '10'
+    price: '10',
+    id: (0,nanoid__WEBPACK_IMPORTED_MODULE_1__.nanoid)()
   }],
   'sightseeing': [],
   'restaurant': [{
     title: 'add meal',
-    price: '15'
+    price: '15',
+    id: (0,nanoid__WEBPACK_IMPORTED_MODULE_1__.nanoid)()
   }, {
     title: 'take tips',
-    price: '5'
+    price: '5',
+    id: (0,nanoid__WEBPACK_IMPORTED_MODULE_1__.nanoid)()
   }, {
     title: 'asjdfjasdf',
-    price: '234'
+    price: '234',
+    id: (0,nanoid__WEBPACK_IMPORTED_MODULE_1__.nanoid)()
   }]
 };
 
@@ -169,9 +196,12 @@ const getWaitingTime = () => {
 };
 
 const getDate = () => {
-  const day = dayjs__WEBPACK_IMPORTED_MODULE_0___default()(new Date());
-  day.add(getRandomIntInclusive(0, 8), 'day');
-  day.add(getRandomIntInclusive(0, 24), 'hour');
+  // const day = dayjs(new Date());
+  // day.add(getRandomIntInclusive(0, 8), 'day').toDate();
+  // day.add(getRandomIntInclusive(0, 24), 'hour').toDate();
+  const randomMonth = getRandomIntInclusive(0, 12);
+  const randomDay = getRandomIntInclusive(0, 28);
+  const day = dayjs__WEBPACK_IMPORTED_MODULE_0___default()(`2022-${randomMonth}-${randomDay}`);
   return day;
 };
 
@@ -195,6 +225,64 @@ const generatePoint = () => {
     endEventDate: getDate()
   };
 };
+
+/***/ }),
+
+/***/ "./src/model/filter-model.js":
+/*!***********************************!*\
+  !*** ./src/model/filter-model.js ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ FilterModel)
+/* harmony export */ });
+/* harmony import */ var _const__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../const */ "./src/const.js");
+/* harmony import */ var _utils_abstract_observers__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/abstract-observers */ "./src/utils/abstract-observers.js");
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedeclaration(obj, privateMap); privateMap.set(obj, value); }
+
+function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollection.has(obj)) { throw new TypeError("Cannot initialize the same private elements twice on an object"); } }
+
+function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set"); _classApplyDescriptorSet(receiver, descriptor, value); return value; }
+
+function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } }
+
+function _classPrivateFieldGet(receiver, privateMap) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get"); return _classApplyDescriptorGet(receiver, descriptor); }
+
+function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
+
+function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
+
+
+
+
+var _filter = /*#__PURE__*/new WeakMap();
+
+class FilterModel extends _utils_abstract_observers__WEBPACK_IMPORTED_MODULE_1__["default"] {
+  constructor(...args) {
+    super(...args);
+
+    _classPrivateFieldInitSpec(this, _filter, {
+      writable: true,
+      value: _const__WEBPACK_IMPORTED_MODULE_0__.FilterType.EVERYTHING
+    });
+
+    _defineProperty(this, "setFilter", (updateType, filter) => {
+      _classPrivateFieldSet(this, _filter, filter);
+
+      this._notify(updateType, filter);
+    });
+  }
+
+  get filter() {
+    return _classPrivateFieldGet(this, _filter);
+  }
+
+}
 
 /***/ }),
 
@@ -281,6 +369,127 @@ class PointsModels extends _utils_abstract_observers__WEBPACK_IMPORTED_MODULE_0_
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (PointsModels);
+
+/***/ }),
+
+/***/ "./src/presenter/Filter-presenter.js":
+/*!*******************************************!*\
+  !*** ./src/presenter/Filter-presenter.js ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ FilterPresenter)
+/* harmony export */ });
+/* harmony import */ var _view_filter_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../view/filter-view */ "./src/view/filter-view.js");
+/* harmony import */ var _render__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../render */ "./src/render.js");
+/* harmony import */ var _const__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../const */ "./src/const.js");
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedeclaration(obj, privateMap); privateMap.set(obj, value); }
+
+function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollection.has(obj)) { throw new TypeError("Cannot initialize the same private elements twice on an object"); } }
+
+function _classPrivateFieldGet(receiver, privateMap) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get"); return _classApplyDescriptorGet(receiver, descriptor); }
+
+function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
+
+function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set"); _classApplyDescriptorSet(receiver, descriptor, value); return value; }
+
+function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
+
+function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } }
+
+
+
+
+
+var _filterContainer = /*#__PURE__*/new WeakMap();
+
+var _filterModel = /*#__PURE__*/new WeakMap();
+
+var _filterComponent = /*#__PURE__*/new WeakMap();
+
+var _handleModelEvent = /*#__PURE__*/new WeakMap();
+
+var _handleFilterTypeChange = /*#__PURE__*/new WeakMap();
+
+class FilterPresenter {
+  constructor(filterContainer, filterModel) {
+    _classPrivateFieldInitSpec(this, _filterContainer, {
+      writable: true,
+      value: null
+    });
+
+    _classPrivateFieldInitSpec(this, _filterModel, {
+      writable: true,
+      value: null
+    });
+
+    _classPrivateFieldInitSpec(this, _filterComponent, {
+      writable: true,
+      value: null
+    });
+
+    _defineProperty(this, "init", () => {
+      const filters = this.filters;
+
+      const prevFilterComponent = _classPrivateFieldGet(this, _filterComponent);
+
+      _classPrivateFieldSet(this, _filterComponent, new _view_filter_view__WEBPACK_IMPORTED_MODULE_0__["default"](filters, _classPrivateFieldGet(this, _filterModel).filter));
+
+      _classPrivateFieldGet(this, _filterComponent).setFilterTypeChangeHandler(_classPrivateFieldGet(this, _handleFilterTypeChange));
+
+      if (prevFilterComponent === null) {
+        (0,_render__WEBPACK_IMPORTED_MODULE_1__.render)(_classPrivateFieldGet(this, _filterContainer), _classPrivateFieldGet(this, _filterComponent), _render__WEBPACK_IMPORTED_MODULE_1__.renderPosition.BEFOREEND);
+        return;
+      }
+
+      (0,_render__WEBPACK_IMPORTED_MODULE_1__.replace)(_classPrivateFieldGet(this, _filterComponent), prevFilterComponent);
+      (0,_render__WEBPACK_IMPORTED_MODULE_1__.remove)(prevFilterComponent);
+    });
+
+    _classPrivateFieldInitSpec(this, _handleModelEvent, {
+      writable: true,
+      value: () => {
+        this.init();
+      }
+    });
+
+    _classPrivateFieldInitSpec(this, _handleFilterTypeChange, {
+      writable: true,
+      value: filterType => {
+        if (_classPrivateFieldGet(this, _filterModel).filter === filterType) {
+          return;
+        }
+
+        _classPrivateFieldGet(this, _filterModel).setFilter(_const__WEBPACK_IMPORTED_MODULE_2__.UpdateType.MAJOR, filterType);
+      }
+    });
+
+    _classPrivateFieldSet(this, _filterContainer, filterContainer);
+
+    _classPrivateFieldSet(this, _filterModel, filterModel);
+
+    _classPrivateFieldGet(this, _filterModel).addObserver(_classPrivateFieldGet(this, _handleModelEvent));
+  }
+
+  get filters() {
+    return [{
+      type: _const__WEBPACK_IMPORTED_MODULE_2__.FilterType.EVERYTHING,
+      name: 'everything'
+    }, {
+      type: _const__WEBPACK_IMPORTED_MODULE_2__.FilterType.FUTURE,
+      name: 'future'
+    }, {
+      type: _const__WEBPACK_IMPORTED_MODULE_2__.FilterType.PAST,
+      name: 'past'
+    }];
+  }
+
+}
 
 /***/ }),
 
@@ -372,16 +581,16 @@ class PointNewPresenter {
 
       _classPrivateFieldGet(this, _pointEditComponent).setDeleteClickHandler(_classPrivateFieldGet(this, _handleDeleteClick));
 
-      _classPrivateFieldGet(this, _pointEditComponent).setFormSubmitHandler(() => {
-        document.removeEventListener('keydown', _classPrivateFieldGet(this, _onEscKeydowm));
-      });
+      _classPrivateFieldGet(this, _pointEditComponent).setFormSubmitHandler(_classPrivateFieldGet(this, _handleFormSubmit));
 
       (0,_render__WEBPACK_IMPORTED_MODULE_1__.render)(_classPrivateFieldGet(this, _pointContainer), _classPrivateFieldGet(this, _pointEditComponent), _render__WEBPACK_IMPORTED_MODULE_1__.renderPosition.AFTERBEGIN);
+      document.addEventListener('keydown', _classPrivateFieldGet(this, _onEscKeydowm));
     });
 
     _defineProperty(this, "destroy", () => {
       (0,_render__WEBPACK_IMPORTED_MODULE_1__.remove)(_classPrivateFieldGet(this, _point));
       (0,_render__WEBPACK_IMPORTED_MODULE_1__.remove)(_classPrivateFieldGet(this, _pointEditComponent));
+      document.removeEventListener('keydown', _classPrivateFieldGet(this, _onEscKeydowm));
     });
 
     _classPrivateFieldInitSpec(this, _onEscKeydowm, {
@@ -397,9 +606,9 @@ class PointNewPresenter {
     _classPrivateFieldInitSpec(this, _handleFormSubmit, {
       writable: true,
       value: update => {
-        const isMinorUpdate = false;
+        _classPrivateFieldGet(this, _changeData).call(this, _const__WEBPACK_IMPORTED_MODULE_2__.UserAction.ADD_POINT, _const__WEBPACK_IMPORTED_MODULE_2__.UpdateType.MINOR, update);
 
-        _classPrivateFieldGet(this, _changeData).call(this, _const__WEBPACK_IMPORTED_MODULE_2__.UserAction.UPDATE_POINT, isMinorUpdate ? _const__WEBPACK_IMPORTED_MODULE_2__.UpdateType.MINOR : _const__WEBPACK_IMPORTED_MODULE_2__.UpdateType.PATCH, update);
+        this.destroy();
       }
     });
 
@@ -635,7 +844,7 @@ class PointPresenter {
     _classPrivateFieldInitSpec(this, _handleFormSubmit, {
       writable: true,
       value: update => {
-        const isMinorUpdate = 1;
+        const isMinorUpdate = false;
 
         _classPrivateFieldGet(this, _changeData).call(this, _const__WEBPACK_IMPORTED_MODULE_3__.UserAction.UPDATE_POINT, isMinorUpdate ? _const__WEBPACK_IMPORTED_MODULE_3__.UpdateType.MINOR : _const__WEBPACK_IMPORTED_MODULE_3__.UpdateType.PATCH, update);
 
@@ -688,6 +897,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _const__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../const */ "./src/const.js");
 /* harmony import */ var _Point_new_presenter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Point-new-presenter */ "./src/presenter/Point-new-presenter.js");
 /* harmony import */ var _mock_point__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../mock/point */ "./src/mock/point.js");
+/* harmony import */ var _utils_filter__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ../utils/filter */ "./src/utils/filter.js");
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedeclaration(obj, privateMap); privateMap.set(obj, value); }
@@ -714,9 +924,12 @@ function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.
 
 
 
+
 var _tripContainer = /*#__PURE__*/new WeakMap();
 
 var _pointsModel = /*#__PURE__*/new WeakMap();
+
+var _filterModel = /*#__PURE__*/new WeakMap();
 
 var _noPointsComponent = /*#__PURE__*/new WeakMap();
 
@@ -729,6 +942,8 @@ var _pointPresenter = /*#__PURE__*/new WeakMap();
 var _pointNewPresenter = /*#__PURE__*/new WeakMap();
 
 var _currentSortType = /*#__PURE__*/new WeakMap();
+
+var _filterType = /*#__PURE__*/new WeakMap();
 
 var _renderedTotalPrice = /*#__PURE__*/new WeakMap();
 
@@ -755,7 +970,7 @@ var _clearBoard = /*#__PURE__*/new WeakMap();
 var _renderBoard = /*#__PURE__*/new WeakMap();
 
 class TripPresenter {
-  constructor(tripContainer, pointsModel) {
+  constructor(tripContainer, pointsModel, filterModel) {
     _classPrivateFieldInitSpec(this, _tripContainer, {
       writable: true,
       value: null
@@ -766,9 +981,14 @@ class TripPresenter {
       value: null
     });
 
+    _classPrivateFieldInitSpec(this, _filterModel, {
+      writable: true,
+      value: null
+    });
+
     _classPrivateFieldInitSpec(this, _noPointsComponent, {
       writable: true,
-      value: new _view_empty_points_list__WEBPACK_IMPORTED_MODULE_2__["default"]()
+      value: null
     });
 
     _classPrivateFieldInitSpec(this, _sortComponent, {
@@ -793,7 +1013,12 @@ class TripPresenter {
 
     _classPrivateFieldInitSpec(this, _currentSortType, {
       writable: true,
-      value: null
+      value: _utils_sort_functions__WEBPACK_IMPORTED_MODULE_5__.SortType.DAY
+    });
+
+    _classPrivateFieldInitSpec(this, _filterType, {
+      writable: true,
+      value: _const__WEBPACK_IMPORTED_MODULE_6__.FilterType.EVERYTHING
     });
 
     _classPrivateFieldInitSpec(this, _renderedTotalPrice, {
@@ -816,8 +1041,11 @@ class TripPresenter {
         isCreatePoint: true
       };
 
-      _classPrivateFieldSet(this, _currentSortType, _utils_sort_functions__WEBPACK_IMPORTED_MODULE_5__.SortType.DAY); //this.#handleModeChange();
+      _classPrivateFieldSet(this, _currentSortType, _utils_sort_functions__WEBPACK_IMPORTED_MODULE_5__.SortType.DAY);
 
+      _classPrivateFieldGet(this, _filterModel).setFilter(_const__WEBPACK_IMPORTED_MODULE_6__.UpdateType.MAJOR, _const__WEBPACK_IMPORTED_MODULE_6__.FilterType.EVERYTHING);
+
+      _classPrivateFieldGet(this, _handleModeChange).call(this);
 
       _classPrivateFieldGet(this, _pointNewPresenter).init(createNewPointData);
     });
@@ -936,6 +1164,8 @@ class TripPresenter {
     _classPrivateFieldInitSpec(this, _renderNoPoints, {
       writable: true,
       value: () => {
+        _classPrivateFieldSet(this, _noPointsComponent, new _view_empty_points_list__WEBPACK_IMPORTED_MODULE_2__["default"](_classPrivateFieldGet(this, _filterType)));
+
         (0,_render_js__WEBPACK_IMPORTED_MODULE_3__.render)(_classPrivateFieldGet(this, _tripContainer), _classPrivateFieldGet(this, _noPointsComponent), _render_js__WEBPACK_IMPORTED_MODULE_3__.renderPosition.BEFOREEND);
       }
     });
@@ -955,7 +1185,10 @@ class TripPresenter {
         _classPrivateFieldGet(this, _pointPresenter).clear();
 
         (0,_render_js__WEBPACK_IMPORTED_MODULE_3__.remove)(_classPrivateFieldGet(this, _sortComponent));
-        (0,_render_js__WEBPACK_IMPORTED_MODULE_3__.remove)(_classPrivateFieldGet(this, _noPointsComponent));
+
+        if (_classPrivateFieldGet(this, _noPointsComponent)) {
+          (0,_render_js__WEBPACK_IMPORTED_MODULE_3__.remove)(_classPrivateFieldGet(this, _noPointsComponent));
+        }
 
         if (resetRenderedTotalPrice) {
           _classPrivateFieldSet(this, _renderedTotalPrice, _classPrivateFieldGet(this, _renderedTotalPrice));
@@ -988,21 +1221,31 @@ class TripPresenter {
 
     _classPrivateFieldSet(this, _pointsModel, pointsModel);
 
+    _classPrivateFieldSet(this, _filterModel, filterModel);
+
     _classPrivateFieldSet(this, _pointNewPresenter, new _Point_new_presenter__WEBPACK_IMPORTED_MODULE_7__["default"](_classPrivateFieldGet(this, _pointListComponent), _classPrivateFieldGet(this, _handleViewAction)));
 
     _classPrivateFieldGet(this, _pointsModel).addObserver(_classPrivateFieldGet(this, _handleModeEvent));
+
+    _classPrivateFieldGet(this, _filterModel).addObserver(_classPrivateFieldGet(this, _handleModeEvent));
   }
 
   get points() {
+    const filterType = _classPrivateFieldGet(this, _filterModel).filter;
+
+    const points = _classPrivateFieldGet(this, _pointsModel).points;
+
+    const filteredPoints = _utils_filter__WEBPACK_IMPORTED_MODULE_9__.filter[filterType](points);
+
     switch (_classPrivateFieldGet(this, _currentSortType)) {
       case _utils_sort_functions__WEBPACK_IMPORTED_MODULE_5__.SortType.PRICE.text:
-        return [..._classPrivateFieldGet(this, _pointsModel).points].sort(_utils_sort_functions__WEBPACK_IMPORTED_MODULE_5__.sortPointsByPrice);
+        return filteredPoints.sort(_utils_sort_functions__WEBPACK_IMPORTED_MODULE_5__.sortPointsByPrice);
 
       case _utils_sort_functions__WEBPACK_IMPORTED_MODULE_5__.SortType.TIME.text:
-        return [..._classPrivateFieldGet(this, _pointsModel).points].sort(_utils_sort_functions__WEBPACK_IMPORTED_MODULE_5__.sortPointsByTime);
+        return filteredPoints.sort(_utils_sort_functions__WEBPACK_IMPORTED_MODULE_5__.sortPointsByTime);
     }
 
-    return _classPrivateFieldGet(this, _pointsModel).points;
+    return filteredPoints;
   }
 
 }
@@ -1144,6 +1387,35 @@ class AbstractObservable {
 
 /***/ }),
 
+/***/ "./src/utils/filter.js":
+/*!*****************************!*\
+  !*** ./src/utils/filter.js ***!
+  \*****************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "filter": () => (/* binding */ filter)
+/* harmony export */ });
+/* harmony import */ var _const__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../const */ "./src/const.js");
+
+const now = new Date();
+const filter = {
+  [_const__WEBPACK_IMPORTED_MODULE_0__.FilterType.EVERYTHING]: points => points,
+  [_const__WEBPACK_IMPORTED_MODULE_0__.FilterType.FUTURE]: points => points.filter(point => point.startEventDate > now || point.endEventDate > now),
+  [_const__WEBPACK_IMPORTED_MODULE_0__.FilterType.PAST]: points => points.filter(point => point.startEventDate < now || point.endEventDate < now)
+}; // import dayjs from 'dayjs';
+// import { FilterType } from '../const';
+// const now = dayjs();
+// export const filter = {
+//   [FilterType.EVERYTHING]: (points) => points,
+//   [FilterType.FUTURE]: (points) => points.filter((point) => point.startEventDate.isAfter(now)),
+//   [FilterType.PAST]: (points) => points.filter((point) => point.endEventDate.isBefore(now)),
+// };
+
+/***/ }),
+
 /***/ "./src/utils/sort-functions.js":
 /*!*************************************!*\
   !*** ./src/utils/sort-functions.js ***!
@@ -1251,16 +1523,31 @@ class AbstractView {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ MessageWithoutPoints)
+/* harmony export */   "default": () => (/* binding */ MessageWithoutPointsView)
 /* harmony export */ });
-/* harmony import */ var _abstract_view_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract-view.js */ "./src/view/abstract-view.js");
+/* harmony import */ var _const_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../const.js */ "./src/const.js");
+/* harmony import */ var _abstract_view_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./abstract-view.js */ "./src/view/abstract-view.js");
 
 
-const createEmptyList = () => '<p class="trip-events__msg">Click New Event to create your first point</p>';
+const NoPointsTextType = {
+  [_const_js__WEBPACK_IMPORTED_MODULE_0__.FilterType.EVERYTHING]: 'Click New Event to create your first point',
+  [_const_js__WEBPACK_IMPORTED_MODULE_0__.FilterType.PAST]: 'There are no past events now',
+  [_const_js__WEBPACK_IMPORTED_MODULE_0__.FilterType.FUTURE]: 'There are no future events now'
+};
 
-class MessageWithoutPoints extends _abstract_view_js__WEBPACK_IMPORTED_MODULE_0__["default"] {
+const createEmptyListTemplate = filterType => {
+  const noPointsTextType = NoPointsTextType[filterType];
+  return `<p class="trip-events__msg">${noPointsTextType}</p>`;
+};
+
+class MessageWithoutPointsView extends _abstract_view_js__WEBPACK_IMPORTED_MODULE_1__["default"] {
+  constructor(data) {
+    super();
+    this._data = data;
+  }
+
   get template() {
-    return createEmptyList();
+    return createEmptyListTemplate(this._data);
   }
 
 }
@@ -1279,28 +1566,83 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (/* binding */ FilterView)
 /* harmony export */ });
 /* harmony import */ var _abstract_view_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract-view.js */ "./src/view/abstract-view.js");
+/* harmony import */ var _const_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../const.js */ "./src/const.js");
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
-const createFilterTemplate = `<form class="trip-filters" action="#" method="get">
+function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedeclaration(obj, privateMap); privateMap.set(obj, value); }
+
+function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollection.has(obj)) { throw new TypeError("Cannot initialize the same private elements twice on an object"); } }
+
+function _classPrivateFieldGet(receiver, privateMap) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get"); return _classApplyDescriptorGet(receiver, descriptor); }
+
+function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
+
+function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set"); _classApplyDescriptorSet(receiver, descriptor, value); return value; }
+
+function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
+
+function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } }
+
+
+
+
+const createFilterTemplate = currentFilterType => `<form class="trip-filters" action="#" method="get">
     <div class="trip-filters__filter">
-      <input id="filter-everything" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="everything">
+      <input id="filter-everything" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${_const_js__WEBPACK_IMPORTED_MODULE_1__.FilterType.EVERYTHING}" ${currentFilterType === _const_js__WEBPACK_IMPORTED_MODULE_1__.FilterType.EVERYTHING ? 'checked' : ''}>
       <label class="trip-filters__filter-label" for="filter-everything">Everything</label>
     </div>
-
     <div class="trip-filters__filter">
-      <input id="filter-future" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="future">
+      <input id="filter-future" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${_const_js__WEBPACK_IMPORTED_MODULE_1__.FilterType.FUTURE}"  ${currentFilterType === _const_js__WEBPACK_IMPORTED_MODULE_1__.FilterType.FUTURE ? 'checked' : ''}>
       <label class="trip-filters__filter-label" for="filter-future">Future</label>
     </div>
-
     <div class="trip-filters__filter">
-      <input id="filter-past" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="past" checked>
+      <input id="filter-past" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${_const_js__WEBPACK_IMPORTED_MODULE_1__.FilterType.PAST}" ${currentFilterType === _const_js__WEBPACK_IMPORTED_MODULE_1__.FilterType.PAST ? 'checked' : ''} >
       <label class="trip-filters__filter-label" for="filter-past">Past</label>
     </div>
-
     <button class="visually-hidden" type="submit">Accept filter</button>
   </form> `;
+
+var _newPointPresenter = /*#__PURE__*/new WeakMap();
+
+var _currentFilter = /*#__PURE__*/new WeakMap();
+
+var _filterTypeChangeHandler = /*#__PURE__*/new WeakMap();
+
 class FilterView extends _abstract_view_js__WEBPACK_IMPORTED_MODULE_0__["default"] {
+  constructor(currentFilterType, newPointPresenter) {
+    super();
+
+    _classPrivateFieldInitSpec(this, _newPointPresenter, {
+      writable: true,
+      value: null
+    });
+
+    _classPrivateFieldInitSpec(this, _currentFilter, {
+      writable: true,
+      value: _const_js__WEBPACK_IMPORTED_MODULE_1__.FilterType.EVERYTHING
+    });
+
+    _defineProperty(this, "setFilterTypeChangeHandler", callback => {
+      this._callback.filterTypeChange = callback;
+      this.element.addEventListener('change', _classPrivateFieldGet(this, _filterTypeChangeHandler));
+    });
+
+    _classPrivateFieldInitSpec(this, _filterTypeChangeHandler, {
+      writable: true,
+      value: evt => {
+        evt.preventDefault();
+
+        this._callback.filterTypeChange(evt.target.value);
+      }
+    });
+
+    _classPrivateFieldSet(this, _newPointPresenter, newPointPresenter);
+
+    _classPrivateFieldSet(this, _currentFilter, currentFilterType);
+  }
+
   get template() {
-    return createFilterTemplate;
+    return createFilterTemplate(_classPrivateFieldGet(this, _currentFilter), _classPrivateFieldGet(this, _newPointPresenter).isFilterDisabled);
   }
 
 }
@@ -1427,18 +1769,14 @@ function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { 
 
 
 
-let id = 0;
 
-const createPointEditOffersTemplate = offer => {
-  id += 1;
-  return `<div class="event__offer-selector">
-  <input class="event__offer-checkbox  visually-hidden"  type="checkbox" name="event-offer-luggage" id="${offer.title + id}">
-  <label class="event__offer-label" for="${offer.title + id}">
+const createPointEditOffersTemplate = offer => `<div class="event__offer-selector">
+  <input class="event__offer-checkbox  visually-hidden"  type="checkbox" name="event-offer-luggage" id="${offer.id}">
+  <label class="event__offer-label" for="${offer.id}">
     <span class="event__offer-title">${offer.title}</span>
     &plus; <span class="event__offer-price">${offer.price}</span>&euro;&nbsp;
   </label>
 </div>`;
-};
 
 const createOfferForm = (data = {}) => {
   const {
@@ -1446,8 +1784,7 @@ const createOfferForm = (data = {}) => {
     destination = '',
     price = 0,
     destinationInfo,
-    isPointDestination,
-    offers = null,
+    offers,
     startEventDate,
     endEventDate
   } = data;
@@ -1547,7 +1884,7 @@ const createOfferForm = (data = {}) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -5439,11 +5776,13 @@ var __webpack_exports__ = {};
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _view_header_info_view__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./view/header-info-view */ "./src/view/header-info-view.js");
 /* harmony import */ var _view_site_menu_view__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./view/site-menu-view */ "./src/view/site-menu-view.js");
-/* harmony import */ var _view_filter_view__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./view/filter-view */ "./src/view/filter-view.js");
-/* harmony import */ var _render__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./render */ "./src/render.js");
-/* harmony import */ var _mock_point__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./mock/point */ "./src/mock/point.js");
-/* harmony import */ var _presenter_Trip_presenter__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./presenter/Trip-presenter */ "./src/presenter/Trip-presenter.js");
-/* harmony import */ var _model_points_model__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./model/points-model */ "./src/model/points-model.js");
+/* harmony import */ var _render__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./render */ "./src/render.js");
+/* harmony import */ var _mock_point__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./mock/point */ "./src/mock/point.js");
+/* harmony import */ var _presenter_Trip_presenter__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./presenter/Trip-presenter */ "./src/presenter/Trip-presenter.js");
+/* harmony import */ var _model_points_model__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./model/points-model */ "./src/model/points-model.js");
+/* harmony import */ var _model_filter_model__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./model/filter-model */ "./src/model/filter-model.js");
+/* harmony import */ var _presenter_Filter_presenter__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./presenter/Filter-presenter */ "./src/presenter/Filter-presenter.js");
+
 
 
 
@@ -5454,23 +5793,25 @@ __webpack_require__.r(__webpack_exports__);
 const POINT_COUNT = 4;
 const points = Array.from({
   length: POINT_COUNT
-}, _mock_point__WEBPACK_IMPORTED_MODULE_4__.generatePoint);
+}, _mock_point__WEBPACK_IMPORTED_MODULE_3__.generatePoint);
 const tripBody = document.querySelector('.page-body');
 const headerMenu = tripBody.querySelector('.trip-main');
 const siteMenuElement = tripBody.querySelector('.trip-controls__navigation');
-const filtersElement = tripBody.querySelector('.trip-controls__filters');
 const mainContainer = tripBody.querySelector('.trip-events');
-const pointsModels = new _model_points_model__WEBPACK_IMPORTED_MODULE_6__["default"]();
-pointsModels.points = points;
-const tripPresenter = new _presenter_Trip_presenter__WEBPACK_IMPORTED_MODULE_5__["default"](mainContainer, pointsModels);
+const pointsModel = new _model_points_model__WEBPACK_IMPORTED_MODULE_5__["default"]();
+pointsModel.points = points;
+const filterModel = new _model_filter_model__WEBPACK_IMPORTED_MODULE_6__["default"]();
+const tripPresenter = new _presenter_Trip_presenter__WEBPACK_IMPORTED_MODULE_4__["default"](mainContainer, pointsModel, filterModel);
+const filterPresenter = new _presenter_Filter_presenter__WEBPACK_IMPORTED_MODULE_7__["default"](siteMenuElement, filterModel);
 
 if (points.length !== 0) {
-  (0,_render__WEBPACK_IMPORTED_MODULE_3__.render)(headerMenu, new _view_header_info_view__WEBPACK_IMPORTED_MODULE_0__["default"](points[0]).element, _render__WEBPACK_IMPORTED_MODULE_3__.renderPosition.AFTERBEGIN);
+  (0,_render__WEBPACK_IMPORTED_MODULE_2__.render)(headerMenu, new _view_header_info_view__WEBPACK_IMPORTED_MODULE_0__["default"](points[0]).element, _render__WEBPACK_IMPORTED_MODULE_2__.renderPosition.AFTERBEGIN);
 }
 
-(0,_render__WEBPACK_IMPORTED_MODULE_3__.render)(siteMenuElement, new _view_site_menu_view__WEBPACK_IMPORTED_MODULE_1__["default"](), _render__WEBPACK_IMPORTED_MODULE_3__.renderPosition.BEFOREEND);
-(0,_render__WEBPACK_IMPORTED_MODULE_3__.render)(filtersElement, new _view_filter_view__WEBPACK_IMPORTED_MODULE_2__["default"](), _render__WEBPACK_IMPORTED_MODULE_3__.renderPosition.BEFOREEND);
+(0,_render__WEBPACK_IMPORTED_MODULE_2__.render)(siteMenuElement, new _view_site_menu_view__WEBPACK_IMPORTED_MODULE_1__["default"](), _render__WEBPACK_IMPORTED_MODULE_2__.renderPosition.BEFOREEND); //render(filtersElement, new FilterView(), renderPosition.BEFOREEND);
+
 tripPresenter.init();
+filterPresenter.init();
 document.querySelector('.trip-main__event-add-btn').addEventListener('click', evt => {
   evt.preventDefault();
   tripPresenter.createNewPoint();
