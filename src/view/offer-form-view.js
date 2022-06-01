@@ -2,7 +2,6 @@ import SmartView from './smart-view';
 import flatpickr from 'flatpickr';
 import dayjs from 'dayjs';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
-import he from 'he';
 
 
 const createPointEditOffersTemplate = (offer) => (
@@ -93,7 +92,7 @@ const createOfferForm = (data = {}) => {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${pointType}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${he.encode(destination)}" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1">
             <datalist id="destination-list-1">
               <option value="Ekaterinburg"></option>
               <option value="Moscow"></option>
