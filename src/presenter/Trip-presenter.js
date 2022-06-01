@@ -40,9 +40,9 @@ export default class TripPresenter {
   }
 
   get points() {
-    this.#filterType = this.#filterModel.filter;
+    const filterType = this.#filterModel.filter;
     const points = this.#pointsModel.points;
-    const filteredPoints = filter[this.#filterType](points);
+    const filteredPoints = filter[filterType](points);
 
     switch (this.#currentSortType) {
       case SortType.PRICE.text:
@@ -50,7 +50,7 @@ export default class TripPresenter {
       case SortType.TIME.text:
         return filteredPoints.sort(sortPointsByTime);
     }
-    console.log(filteredPoints);
+
     return filteredPoints;
   }
 
@@ -69,6 +69,7 @@ export default class TripPresenter {
 
     const createNewPointData = {...point, isCreatePoint: true};
     this.#currentSortType = SortType.DAY;
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#handleModeChange();
     this.#pointNewPresenter.init(createNewPointData);
   }

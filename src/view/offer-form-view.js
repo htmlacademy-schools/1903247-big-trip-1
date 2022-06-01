@@ -3,19 +3,16 @@ import flatpickr from 'flatpickr';
 import dayjs from 'dayjs';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
-let id = 0;
 
-const createPointEditOffersTemplate = (offer) => {
-  id += 1;
-  return `<div class="event__offer-selector">
-  <input class="event__offer-checkbox  visually-hidden"  type="checkbox" name="event-offer-luggage" id="${offer.title + id}">
-  <label class="event__offer-label" for="${offer.title + id}">
+const createPointEditOffersTemplate = (offer) => (
+  `<div class="event__offer-selector">
+  <input class="event__offer-checkbox  visually-hidden"  type="checkbox" name="event-offer-luggage" id="${offer.id}">
+  <label class="event__offer-label" for="${offer.id}">
     <span class="event__offer-title">${offer.title}</span>
     &plus; <span class="event__offer-price">${offer.price}</span>&euro;&nbsp;
   </label>
-</div>`;
-};
-
+</div>`
+);
 
 const createOfferForm = (data = {}) => {
   const { pointType = 'taxi', destination = '', price = 0, destinationInfo, offers, startEventDate, endEventDate } = data;

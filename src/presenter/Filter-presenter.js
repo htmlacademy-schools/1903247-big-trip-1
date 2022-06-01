@@ -19,16 +19,16 @@ export default class FilterPresenter {
     return [
       {
         type: FilterType.EVERYTHING,
-        name: 'EVERYTHING',
+        name: 'everything',
 
       },
       {
         type: FilterType.FUTURE,
-        name: 'FUTURE',
+        name: 'future',
       },
       {
         type: FilterType.PAST,
-        name: 'PAST'
+        name: 'past'
       }
     ];
   }
