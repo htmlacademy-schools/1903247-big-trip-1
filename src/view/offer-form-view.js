@@ -3,22 +3,20 @@ import flatpickr from 'flatpickr';
 import dayjs from 'dayjs';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
-let id = 0;
 
-const createPointEditOffersTemplate = (offer) => {
-  id += 1;
-  return `<div class="event__offer-selector">
-  <input class="event__offer-checkbox  visually-hidden"  type="checkbox" name="event-offer-luggage" id="${offer.title + id}">
-  <label class="event__offer-label" for="${offer.title + id}">
+const createPointEditOffersTemplate = (offer) => (
+  `<div class="event__offer-selector">
+  <input class="event__offer-checkbox  visually-hidden"  type="checkbox" name="event-offer-luggage" id="${offer.id}">
+  <label class="event__offer-label" for="${offer.id}">
     <span class="event__offer-title">${offer.title}</span>
     &plus; <span class="event__offer-price">${offer.price}</span>&euro;&nbsp;
   </label>
-</div>`;
-};
+</div>`
+);
 
+const createOfferForm = (data = {}) => {
+  const { pointType = 'taxi', destination = '', price = 0, destinationInfo, offers, startEventDate, endEventDate } = data;
 
-const createOfferForm = (data) => {
-  const { pointType, destination, price, destinationInfo, isPointDestination, offers, startEventDate, endEventDate } = data;
   const offersOfType = offers[pointType];
 
   let offersList = '';
@@ -118,11 +116,15 @@ const createOfferForm = (data) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
           </div>
 
           <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-          <button class="event__reset-btn" type="reset">Cancel</button>
+
+          <button class="event__reset-btn" type="reset">Delete</button>
+                  <button class="event__rollup-btn" type="button">
+                    <span class="visually-hidden">Open event</span>
+                  </button>
         </header>
         <section class="event__details">
 
@@ -133,7 +135,7 @@ const createOfferForm = (data) => {
             </div>
           </section>` : ''}
 
-          ${isPointDestination ? `<section class="event__section  event__section--destination">
+          ${destination !== '' ? `<section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
             <p class="event__destination-description">${destinationInfo.description}</p>
 
@@ -187,6 +189,7 @@ export default class OfferFormView extends SmartView {
     this.#setDatepickerStart();
     this.#setDatepickerEnd();
     this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   #setInnerHandlers = () => {
@@ -197,9 +200,9 @@ export default class OfferFormView extends SmartView {
   }
 
   #destinationInputHandler = (evt) => {
-    evt.preventDefault();
+    //evt.preventDefault();
     this.updateData({
-      destination: evt.target.value
+      destination: evt.target.value,
     });
   }
 
@@ -213,6 +216,11 @@ export default class OfferFormView extends SmartView {
   setFormSubmitHandler = (callback) => {
     this._callback.formSubmit = callback;
     this.element.querySelector('.event--edit').addEventListener('submit', this.#formSubmitHandler);
+  }
+
+  setDeleteClickHandler = (callback) => {
+    this._callback.deleteClick = callback;
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
   }
 
   #setDatepickerStart = () => {
@@ -255,10 +263,14 @@ export default class OfferFormView extends SmartView {
     this._callback.formSubmit(OfferFormView.parseDataToPoint(this._data));
   }
 
+  #formDeleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.deleteClick(OfferFormView.parseDataToPoint(this._data));
+  }
 
   static parsePointToData = (point) => ({
     ...point,
-    isPointDestination: point.destination !== null,
+    //isPointDestination: point.destination !== null,
   });
 
   static parseDataToPoint = (data) => {

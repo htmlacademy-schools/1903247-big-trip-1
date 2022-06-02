@@ -34,15 +34,15 @@ const generateDestinationCity = () => {
 };
 
 const offersByType = {
-  'taxi': [{title: 'call business class', price: '10'}, {title: 'add seats', price: '5'}],
+  'taxi': [{title: 'call business class', price: '10', id: nanoid()}, {title: 'add seats', price: '5', id: nanoid()}],
   'bus': [],
-  'train': [{title: 'add linens', price: '5'}, {title: 'choose coupe', price: '15'}, {title: 'add food', price:'15'}],
-  'ship': [{title: 'add luggage', price: '30'}, {title: 'take a tour', price: '20'}, {title: 'add dinner', price: '15'}, {title: 'fishing', price: 40}],
-  'drive': [{title: 'refueling', price: '20'}, {title: 'add trailer', price: '100'}],
-  'flight': [{title: 'add luggage', price: '30'}, {title: 'switch to comfort class', price: '40'}, {title: 'add meal', price: '15'}, {title: 'choose seat', price: '10'}, {title: 'travel by train', price: '40'}],
-  'check-in': [{title: 'switch to comfort class', price: '40'}, {title: 'add meal', price: '15'}, {title: 'choose seat', price: '10'}],
+  'train': [{title: 'add linens', price: '5', id: nanoid()}, {title: 'choose coupe', price: '15', id: nanoid()}, {title: 'add food', price:'15', id: nanoid()}],
+  'ship': [{title: 'add luggage', price: '30', id: nanoid()}, {title: 'take a tour', price: '20', id: nanoid()}, {title: 'add dinner', price: '15', id: nanoid()}, {title: 'fishing', price: 40}],
+  'drive': [{title: 'refueling', price: '20', id: nanoid()}, {title: 'add trailer', price: '100', id: nanoid()}],
+  'flight': [{title: 'add luggage', price: '30', id: nanoid()}, {title: 'switch to comfort class', price: '40', id: nanoid()}, {title: 'add meal', price: '15', id: nanoid()}, {title: 'choose seat', price: '10', id: nanoid()}, {title: 'travel by train', price: '40', id: nanoid()}],
+  'check-in': [{title: 'switch to comfort class', price: '40', id: nanoid()}, {title: 'add meal', price: '15', id: nanoid()}, {title: 'choose seat', price: '10', id: nanoid()}],
   'sightseeing': [],
-  'restaurant': [{title: 'add meal', price: '15'}, {title: 'take tips', price: '5'}, {title: 'asjdfjasdf', price: '234'}]
+  'restaurant': [{title: 'add meal', price: '15', id: nanoid()}, {title: 'take tips', price: '5', id: nanoid()}, {title: 'asjdfjasdf', price: '234', id: nanoid()}]
 };
 
 const generatePictures = () => {
@@ -71,9 +71,13 @@ const getWaitingTime = () => {
 };
 
 const getDate = () => {
-  const day = dayjs(new Date());
-  day.add(getRandomIntInclusive(0, 8), 'day');
-  day.add(getRandomIntInclusive(0, 24), 'hour');
+  // const day = dayjs(new Date());
+  // day.add(getRandomIntInclusive(0, 8), 'day').toDate();
+  // day.add(getRandomIntInclusive(0, 24), 'hour').toDate();
+
+  const randomMonth = getRandomIntInclusive(0, 12);
+  const randomDay = getRandomIntInclusive(0, 28);
+  const day = dayjs(`2022-${randomMonth}-${randomDay}`);
 
   return day;
 };
