@@ -34,9 +34,6 @@ export default class TripPresenter {
     this.#filterModel = filterModel;
 
     this.#pointNewPresenter = new PointNewPresenter(this.#pointListComponent, this.#handleViewAction);
-
-    this.#pointsModel.addObserver(this.#handleModeEvent);
-    this.#filterModel.addObserver(this.#handleModeEvent);
   }
 
   get points() {
@@ -58,10 +55,13 @@ export default class TripPresenter {
 
     render(this.#tripContainer, this.#pointListComponent, renderPosition.BEFOREEND);
 
+    this.#pointsModel.addObserver(this.#handleModeEvent);
+    this.#filterModel.addObserver(this.#handleModeEvent);
+
     this.#renderBoard();
   }
 
-  createNewPoint = () => {
+  createNewPoint = (callback) => {
     const point = generatePoint();
     point.destination = '';
     point.pointType = 'taxi';
@@ -71,7 +71,16 @@ export default class TripPresenter {
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#handleModeChange();
-    this.#pointNewPresenter.init(createNewPointData);
+    this.#pointNewPresenter.init(createNewPointData, callback);
+  }
+
+  destroy = () => {
+    this.#clearBoard({resetRenderedTotalPrice: true, resetSortType: true});
+
+    remove(this.#pointListComponent);
+
+    this.#pointsModel.removeObserver(this.#handleModeEvent);
+    this.#filterModel.removeObserver(this.#handleModeEvent);
   }
 
   #handleModeEvent = (updateType, data) => {
