@@ -7,9 +7,10 @@ import PointPresenter from './Point-presenter';
 import { SortType, sortPointsByPrice, sortPointsByTime } from '../utils/sort-functions';
 import { FilterType, UpdateType, UserAction } from '../const';
 import PointNewPresenter from './Point-new-presenter';
-import { generatePoint } from '../mock/point';
+//import { generatePoint } from '../mock/point';
 import { filter } from '../utils/filter';
 import LoadingView from '../view/loading-view';
+import { nanoid } from 'nanoid';
 
 
 export default class TripPresenter {
@@ -64,10 +65,7 @@ export default class TripPresenter {
   }
 
   createNewPoint = (callback) => {
-    const point = generatePoint();
-    point.destination = '';
-    point.pointType = 'taxi';
-    point.price = 0;
+    const point = this.#generatePoint();
 
     const createNewPointData = {...point, isCreatePoint: true};
     this.#currentSortType = SortType.DAY;
@@ -84,6 +82,21 @@ export default class TripPresenter {
     this.#pointsModel.removeObserver(this.#handleModeEvent);
     this.#filterModel.removeObserver(this.#handleModeEvent);
   }
+
+  #generatePoint = () => ({
+    pointType: 'taxi',
+    id: nanoid(),
+    price: 0,
+    offers: [],
+    destination: {
+      name: '',
+      description: '',
+      pictures: []
+    },
+    isFavorite: false,
+    startEventDate: new Date(),
+    endEventDate: new Date()
+  });
 
   #handleModeEvent = (updateType, data) => {
     switch (updateType) {

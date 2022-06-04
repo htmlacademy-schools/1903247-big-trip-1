@@ -19,7 +19,7 @@ const createDestinationPicturesTemplate = (picture) => (
 );
 
 const createOfferForm = (data = {}) => {
-  const { pointType = 'taxi', destination, price = 0, offers, startEventDate, endEventDate } = data;
+  const { pointType = 'taxi', destination, price = 0, offers, startEventDate, endEventDate, id } = data;
 
   let offersList = '';
   let pictureList = '';
@@ -29,10 +29,12 @@ const createOfferForm = (data = {}) => {
     offersList += offerCurrent;
   });
 
-  destination.pictures.forEach((picture) => {
-    const pictureCurrent = createDestinationPicturesTemplate(picture);
-    pictureList += pictureCurrent;
-  });
+  if (destination.pictures.length !== 0) {
+    destination.pictures.forEach((picture) => {
+      const pictureCurrent = createDestinationPicturesTemplate(picture);
+      pictureList += pictureCurrent;
+    });
+  }
 
   return `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
@@ -100,7 +102,7 @@ const createOfferForm = (data = {}) => {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${pointType}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
             <datalist id="destination-list-1">
               <option value="Ekaterinburg"></option>
               <option value="Moscow"></option>
