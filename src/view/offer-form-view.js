@@ -19,7 +19,7 @@ const createDestinationPicturesTemplate = (picture) => (
 );
 
 const createOfferForm = (data = {}) => {
-  const { pointType = 'taxi', destination, price = 0, offers, startEventDate, endEventDate, id } = data;
+  const { pointType = 'taxi', destination, price = 0, offers, startEventDate, endEventDate, id, isDisabled, isSaving, isDeleting } = data;
 
   let offersList = '';
   let pictureList = '';
@@ -129,9 +129,9 @@ const createOfferForm = (data = {}) => {
             <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit">${isSaving ? 'Saving...' : 'Save'}</button>
 
-          <button class="event__reset-btn" type="reset">Delete</button>
+          <button class="event__reset-btn" type="reset">${isDeleting ? 'Deleting...' : 'Delete'}</button>
                   <button class="event__rollup-btn" type="button">
                     <span class="visually-hidden">Open event</span>
                   </button>
@@ -276,7 +276,9 @@ export default class OfferFormView extends SmartView {
 
   static parsePointToData = (point) => ({
     ...point,
-    //isPointDestination: point.destination !== null,
+    isDisabled: false,
+    isDeleting: false,
+    isSaving: false,
   });
 
   static parseDataToPoint = (data) => {
@@ -287,6 +289,9 @@ export default class OfferFormView extends SmartView {
     }
 
     delete point.isPointDestination;
+    delete point.isDeleting;
+    delete point.isDisabled;
+    delete point.isSaving;
 
     return point;
   }

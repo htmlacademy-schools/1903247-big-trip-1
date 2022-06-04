@@ -50,11 +50,11 @@ export default class PointNewPresenter {
     }
   }
 
-  #handleFormSubmit = (update) => {
+  #handleFormSubmit = (point) => {
     this.#changeData(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
-      update
+      point,
     );
     this.destroy();
   }
