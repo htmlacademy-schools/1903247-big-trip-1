@@ -9,6 +9,7 @@ import { FilterType, UpdateType, UserAction } from '../const';
 import PointNewPresenter from './Point-new-presenter';
 import { generatePoint } from '../mock/point';
 import { filter } from '../utils/filter';
+import LoadingView from '../view/loading-view';
 
 
 export default class TripPresenter {
@@ -19,12 +20,13 @@ export default class TripPresenter {
   #noPointsComponent = null;
   #sortComponent = null;
   #pointListComponent = new PointListView();
-
+  #loadingComponent = new LoadingView();
 
   #pointPresenter = new Map();
   #pointNewPresenter = null;
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
+  #isLoading = true;
 
   #renderedTotalPrice = 0;
 
@@ -96,6 +98,11 @@ export default class TripPresenter {
         this.#clearBoard({resetRenderedTotalPrice: true, resetSortType: true});
         this.#renderBoard();
         break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderBoard();
+        break;
     }
   }
 
@@ -165,6 +172,9 @@ export default class TripPresenter {
     this.#sortComponent.setSortChangeClickHandler(this.#handleSortTypeChange);
   }
 
+  #renderLoading = () => {
+    render(this.#pointListComponent, this.#loadingComponent, renderPosition.AFTERBEGIN);
+  }
 
   #renderNoPoints = () => {
     this.#noPointsComponent = new MessageWithoutPointsView(this.#filterType);
@@ -180,6 +190,7 @@ export default class TripPresenter {
     this.#pointPresenter.clear();
 
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
 
     if (this.#noPointsComponent) {
       remove(this.#noPointsComponent);
@@ -197,12 +208,16 @@ export default class TripPresenter {
   }
 
   #renderBoard = () => {
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
     if (this.points.length === 0) {
       this.#renderNoPoints();
       return;
     }
+
     this.#renderSort();
     this.#renderPoints(this.points);
-
   }
 }
