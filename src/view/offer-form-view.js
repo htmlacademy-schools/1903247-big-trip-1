@@ -15,16 +15,16 @@ const createPointEditOffersTemplate = (offer) => (
 );
 
 const createOfferForm = (data = {}) => {
-  const { pointType = 'taxi', destination = '', price = 0, destinationInfo, offers, startEventDate, endEventDate } = data;
+  const { pointType = 'taxi', destination, price = 0, offers, startEventDate, endEventDate } = data;
 
   const offersOfType = offers[pointType];
 
   let offersList = '';
 
-  offersOfType.forEach((offer) => {
-    const offerCurrent = createPointEditOffersTemplate(offer);
-    offersList += offerCurrent;
-  });
+  // offersOfType.forEach((offer) => {
+  //   const offerCurrent = createPointEditOffersTemplate(offer);
+  //   offersList += offerCurrent;
+  // });
 
   return `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
@@ -128,24 +128,24 @@ const createOfferForm = (data = {}) => {
         </header>
         <section class="event__details">
 
-          ${offersOfType.length !== 0 ? `<section class="event__section  event__section--offers">
+          ${offers.length !== 0 ? `<section class="event__section  event__section--offers">
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
             <div class="event__available-offers">
               ${offersList}
             </div>
           </section>` : ''}
 
-          ${destination !== '' ? `<section class="event__section  event__section--destination">
+          ${destination.name !== '' ? `<section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${destinationInfo.description}</p>
+            <p class="event__destination-description">${destination.description}</p>
 
             <div class="event__photos-container">
               <div class="event__photos-tape">
-                <img class="event__photo" src="${destinationInfo.pictures[0]}" alt="Event photo">
-                <img class="event__photo" src="${destinationInfo.pictures[1]}" alt="Event photo">
-                <img class="event__photo" src="${destinationInfo.pictures[2]}" alt="Event photo">
-                <img class="event__photo" src="${destinationInfo.pictures[3]}" alt="Event photo">
-                <img class="event__photo" src="${destinationInfo.pictures[4]}" alt="Event photo">
+                <img class="event__photo" src="${destination.pictures[0]}" alt="Event photo">
+                <img class="event__photo" src="${destination.pictures[1]}" alt="Event photo">
+                <img class="event__photo" src="${destination.pictures[2]}" alt="Event photo">
+                <img class="event__photo" src="${destination.pictures[3]}" alt="Event photo">
+                <img class="event__photo" src="${destination.pictures[4]}" alt="Event photo">
               </div>
             </div>
           </section>` : ''}

@@ -78,5 +78,6 @@ document.querySelector('.trip-main__event-add-btn').addEventListener('click', (e
 
 pointsModel.init().finally(() => {
   render(siteMenuElement, siteMenuComponent, renderPosition.AFTERBEGIN);
+  render(headerMenu, new HeaderInfoView().element, renderPosition.AFTERBEGIN);
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 });

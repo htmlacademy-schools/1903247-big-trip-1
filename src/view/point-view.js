@@ -1,3 +1,4 @@
+import AbstractView from './abstract-view.js';
 import SmartView from './smart-view.js';
 
 // const createOffersTemplate = (offer) => {
@@ -15,7 +16,7 @@ import SmartView from './smart-view.js';
 // };
 
 const createPointTemplate = (point) => {
-  const { pointType, price, destination, isFavorite, waitingTime, period } = point;
+  const { pointType, price, destination, isFavorite, startEventDate, endEventDate } = point;
 
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn event__favorite-btn--active'
@@ -27,14 +28,14 @@ const createPointTemplate = (point) => {
           <div class="event__type">
             <img class="event__type-icon" width="42" height="42" src="img/icons/${pointType}.png" alt="Event type icon">
           </div>
-          <h3 class="event__title">${pointType} ${destination}</h3>
+          <h3 class="event__title">${pointType} ${destination.name}</h3>
           <div class="event__schedule">
             <p class="event__time">
-              <time class="event__start-time" datetime="2019-03-18T10:30">${period[0]}</time>
+              <time class="event__start-time" datetime="2019-03-18T10:30">${1}</time>
               &mdash;
-              <time class="event__end-time" datetime="2019-03-18T11:00">${period[1]}</time>
+              <time class="event__end-time" datetime="2019-03-18T11:00">${1}</time>
             </p>
-            <p class="event__duration">${waitingTime}M</p>
+            <p class="event__duration">${2}M</p>
           </div>
           <p class="event__price">
             &euro;&nbsp;<span class="event__price-value">${price}</span>
@@ -57,7 +58,7 @@ const createPointTemplate = (point) => {
 `;
 };
 
-export default class PointView extends SmartView {
+export default class PointView extends AbstractView {
   #point = null;
 
   constructor(point) {
