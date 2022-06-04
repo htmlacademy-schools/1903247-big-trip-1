@@ -21,7 +21,7 @@ export default class ApiService {
     const response = await this.#load({
       url: `points/${point.id}`,
       method: Method.PUT,
-      body: JSON.stringify(point),
+      body: JSON.stringify(this.#adaptToServer(point)),
       headers: new Headers({'Content-Type': 'application/json'}),
     });
 
@@ -49,6 +49,24 @@ export default class ApiService {
     } catch (err) {
       ApiService.catchError(err);
     }
+  }
+
+  #adaptToServer = (point) => {
+    const adaptedPoint = {...point,
+      'date_from': point.startEventDate instanceof Date ? point.startEventDate.toISOStrintg() : null,
+      'date_to': point.endEventDate instanceof Date ? point.endEventDate.toISOStrintg() : null,
+      'isFavorite': point.isFavorite,
+      'base_price': point.price,
+      'type': point.pointType,
+    };
+
+    delete adaptedPoint.startEventDate;
+    delete adaptedPoint.endEventDate;
+    delete adaptedPoint.isFavorite;
+    delete adaptedPoint.price;
+    delete adaptedPoint.pointType;
+
+    return adaptedPoint;
   }
 
   static parseResponse = (response) => response.json();
