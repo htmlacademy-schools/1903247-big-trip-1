@@ -14,17 +14,25 @@ const createPointEditOffersTemplate = (offer) => (
 </div>`
 );
 
+const createDestinationPicturesTemplate = (picture) => (
+  `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`
+);
+
 const createOfferForm = (data = {}) => {
   const { pointType = 'taxi', destination, price = 0, offers, startEventDate, endEventDate } = data;
 
-  const offersOfType = offers[pointType];
-
   let offersList = '';
+  let pictureList = '';
 
-  // offersOfType.forEach((offer) => {
-  //   const offerCurrent = createPointEditOffersTemplate(offer);
-  //   offersList += offerCurrent;
-  // });
+  offers.forEach((offer) => {
+    const offerCurrent = createPointEditOffersTemplate(offer);
+    offersList += offerCurrent;
+  });
+
+  destination.pictures.forEach((picture) => {
+    const pictureCurrent = createDestinationPicturesTemplate(picture);
+    pictureList += pictureCurrent;
+  });
 
   return `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
@@ -141,11 +149,7 @@ const createOfferForm = (data = {}) => {
 
             <div class="event__photos-container">
               <div class="event__photos-tape">
-                <img class="event__photo" src="${destination.pictures[0]}" alt="Event photo">
-                <img class="event__photo" src="${destination.pictures[1]}" alt="Event photo">
-                <img class="event__photo" src="${destination.pictures[2]}" alt="Event photo">
-                <img class="event__photo" src="${destination.pictures[3]}" alt="Event photo">
-                <img class="event__photo" src="${destination.pictures[4]}" alt="Event photo">
+                ${pictureList}
               </div>
             </div>
           </section>` : ''}

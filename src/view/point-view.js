@@ -1,5 +1,6 @@
+import dayjs from 'dayjs';
 import AbstractView from './abstract-view.js';
-import SmartView from './smart-view.js';
+import { formatTimeInMinute } from '../utils/time-function.js';
 
 // const createOffersTemplate = (offer) => {
 //   const offerList = document.querySelector('.event__selected-offers');
@@ -18,24 +19,27 @@ import SmartView from './smart-view.js';
 const createPointTemplate = (point) => {
   const { pointType, price, destination, isFavorite, startEventDate, endEventDate } = point;
 
+  const timeBetweenDateInMin = dayjs(endEventDate).diff(startEventDate, 'minute');
+  const formatPeriod = formatTimeInMinute(timeBetweenDateInMin);
+
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn event__favorite-btn--active'
     : 'event__favorite-btn';
 
   return `<li class="trip-events__item">
         <div class="event">
-          <time class="event__date" datetime="2019-03-18">MAR 18</time>
+          <time class="event__date" datetime="${startEventDate}">${dayjs(startEventDate).format('MMM DD')}</time>
           <div class="event__type">
             <img class="event__type-icon" width="42" height="42" src="img/icons/${pointType}.png" alt="Event type icon">
           </div>
           <h3 class="event__title">${pointType} ${destination.name}</h3>
           <div class="event__schedule">
             <p class="event__time">
-              <time class="event__start-time" datetime="2019-03-18T10:30">${1}</time>
+              <time class="event__start-time" datetime="${startEventDate}">${dayjs(startEventDate).format('HH:mm')}</time>
               &mdash;
-              <time class="event__end-time" datetime="2019-03-18T11:00">${1}</time>
+              <time class="event__end-time" datetime="${endEventDate}">${dayjs(endEventDate).format('HH:mm')}</time>
             </p>
-            <p class="event__duration">${2}M</p>
+            <p class="event__duration">${formatPeriod}</p>
           </div>
           <p class="event__price">
             &euro;&nbsp;<span class="event__price-value">${price}</span>
