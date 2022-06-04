@@ -7,9 +7,13 @@ import PointsModels from './model/points-model';
 import FilterModel from './model/filter-model';
 import FilterPresenter from './presenter/Filter-presenter';
 import { MenuItem } from './const';
+import ApiService from './api-service';
 
 
 const POINT_COUNT = 4;
+const AUTHORIAZATION = 'Basic sdjrj34jwkw34';
+const END_POINT = 'https://16.ecmascript.pages.academy/big-trip';
+
 const points = Array.from({ length: POINT_COUNT }, generatePoint);
 
 const tripBody = document.querySelector('.page-body');
@@ -18,7 +22,7 @@ const siteMenuElement = tripBody.querySelector('.trip-controls__navigation');
 const mainContainer = tripBody.querySelector('.trip-events');
 const siteMenuComponent = new SiteMenuView();
 
-const pointsModel = new PointsModels();
+const pointsModel = new PointsModels(new ApiService(END_POINT, AUTHORIAZATION));
 pointsModel.points = points;
 
 const filterModel = new FilterModel();
@@ -36,7 +40,8 @@ const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.ADD_NEW_POINT:
       // Скрыть статистику
-      // Показать фильтры
+      filterPresenter.destroy();
+      filterPresenter.init();
       tripPresenter.destroy();
       tripPresenter.init();
       tripPresenter.createNewPoint(handlePointNewFormClose);
@@ -44,12 +49,13 @@ const handleSiteMenuClick = (menuItem) => {
       siteMenuComponent.element.querySelector(`[value=${MenuItem.STATS}]`).disabled = true;
       break;
     case MenuItem.TABLE:
-      // Показать фильтры
+      filterPresenter.init();
       siteMenuComponent.setMenuItem(MenuItem.TABLE);
       tripPresenter.init();
       // Скрыть статистику
       break;
     case MenuItem.STATS:
+      filterPresenter.destroy();
       // Скрыть фильтры
       siteMenuComponent.setMenuItem(MenuItem.STATS);
       tripPresenter.destroy();
