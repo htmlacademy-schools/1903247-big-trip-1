@@ -45,10 +45,10 @@ export default class SortView extends AbstractView {
 
   setSortChangeClickHandler = (callback) => {
     this._callback.sortChange = callback;
-    document.querySelectorAll('.trip-sort__input').forEach((element) => element.addEventListener('click', this.#SortChangeHandler));
+    document.querySelectorAll('.trip-sort__input').forEach((element) => element.addEventListener('click', this.#sortChangeHandler));
   }
 
-  #SortChangeHandler = (evt) => {
+  #sortChangeHandler = (evt) => {
     if (evt.target.checked === true) {
       this._callback.sortChange(evt.target.dataset.sortType);
     }

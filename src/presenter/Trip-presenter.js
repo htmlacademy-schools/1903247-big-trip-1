@@ -7,8 +7,10 @@ import PointPresenter from './Point-presenter';
 import { SortType, sortPointsByPrice, sortPointsByTime } from '../utils/sort-functions';
 import { FilterType, UpdateType, UserAction } from '../const';
 import PointNewPresenter from './Point-new-presenter';
-import { generatePoint } from '../mock/point';
+//import { generatePoint } from '../mock/point';
 import { filter } from '../utils/filter';
+import LoadingView from '../view/loading-view';
+import { nanoid } from 'nanoid';
 
 
 export default class TripPresenter {
@@ -19,12 +21,13 @@ export default class TripPresenter {
   #noPointsComponent = null;
   #sortComponent = null;
   #pointListComponent = new PointListView();
-
+  #loadingComponent = new LoadingView();
 
   #pointPresenter = new Map();
   #pointNewPresenter = null;
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
+  #isLoading = true;
 
   #renderedTotalPrice = 0;
 
@@ -34,9 +37,6 @@ export default class TripPresenter {
     this.#filterModel = filterModel;
 
     this.#pointNewPresenter = new PointNewPresenter(this.#pointListComponent, this.#handleViewAction);
-
-    this.#pointsModel.addObserver(this.#handleModeEvent);
-    this.#filterModel.addObserver(this.#handleModeEvent);
   }
 
   get points() {
@@ -58,21 +58,45 @@ export default class TripPresenter {
 
     render(this.#tripContainer, this.#pointListComponent, renderPosition.BEFOREEND);
 
+    this.#pointsModel.addObserver(this.#handleModeEvent);
+    this.#filterModel.addObserver(this.#handleModeEvent);
+
     this.#renderBoard();
   }
 
-  createNewPoint = () => {
-    const point = generatePoint();
-    point.destination = '';
-    point.pointType = 'taxi';
-    point.price = 0;
+  createNewPoint = (callback) => {
+    const point = this.#generatePoint();
 
     const createNewPointData = {...point, isCreatePoint: true};
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#handleModeChange();
-    this.#pointNewPresenter.init(createNewPointData);
+    this.#pointNewPresenter.init(createNewPointData, callback);
   }
+
+  destroy = () => {
+    this.#clearBoard({resetRenderedTotalPrice: true, resetSortType: true});
+
+    remove(this.#pointListComponent);
+
+    this.#pointsModel.removeObserver(this.#handleModeEvent);
+    this.#filterModel.removeObserver(this.#handleModeEvent);
+  }
+
+  #generatePoint = () => ({
+    pointType: 'taxi',
+    id: nanoid(),
+    price: 0,
+    offers: [],
+    destination: {
+      name: '',
+      description: '',
+      pictures: []
+    },
+    isFavorite: false,
+    startEventDate: new Date(),
+    endEventDate: new Date()
+  });
 
   #handleModeEvent = (updateType, data) => {
     switch (updateType) {
@@ -85,6 +109,11 @@ export default class TripPresenter {
         break;
       case UpdateType.MAJOR:
         this.#clearBoard({resetRenderedTotalPrice: true, resetSortType: true});
+        this.#renderBoard();
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
         this.#renderBoard();
         break;
     }
@@ -156,6 +185,9 @@ export default class TripPresenter {
     this.#sortComponent.setSortChangeClickHandler(this.#handleSortTypeChange);
   }
 
+  #renderLoading = () => {
+    render(this.#pointListComponent, this.#loadingComponent, renderPosition.AFTERBEGIN);
+  }
 
   #renderNoPoints = () => {
     this.#noPointsComponent = new MessageWithoutPointsView(this.#filterType);
@@ -171,6 +203,7 @@ export default class TripPresenter {
     this.#pointPresenter.clear();
 
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
 
     if (this.#noPointsComponent) {
       remove(this.#noPointsComponent);
@@ -188,12 +221,16 @@ export default class TripPresenter {
   }
 
   #renderBoard = () => {
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
     if (this.points.length === 0) {
       this.#renderNoPoints();
       return;
     }
+
     this.#renderSort();
     this.#renderPoints(this.points);
-
   }
 }

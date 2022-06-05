@@ -34,15 +34,15 @@ const generateDestinationCity = () => {
 };
 
 const offersByType = {
-  'taxi': [{title: 'call business class', price: '10', id: nanoid()}, {title: 'add seats', price: '5', id: nanoid()}],
+  'taxi': [{ title: 'call business class', price: '10', id: nanoid() }, { title: 'add seats', price: '5', id: nanoid() }],
   'bus': [],
-  'train': [{title: 'add linens', price: '5', id: nanoid()}, {title: 'choose coupe', price: '15', id: nanoid()}, {title: 'add food', price:'15', id: nanoid()}],
-  'ship': [{title: 'add luggage', price: '30', id: nanoid()}, {title: 'take a tour', price: '20', id: nanoid()}, {title: 'add dinner', price: '15', id: nanoid()}, {title: 'fishing', price: 40}],
-  'drive': [{title: 'refueling', price: '20', id: nanoid()}, {title: 'add trailer', price: '100', id: nanoid()}],
-  'flight': [{title: 'add luggage', price: '30', id: nanoid()}, {title: 'switch to comfort class', price: '40', id: nanoid()}, {title: 'add meal', price: '15', id: nanoid()}, {title: 'choose seat', price: '10', id: nanoid()}, {title: 'travel by train', price: '40', id: nanoid()}],
-  'check-in': [{title: 'switch to comfort class', price: '40', id: nanoid()}, {title: 'add meal', price: '15', id: nanoid()}, {title: 'choose seat', price: '10', id: nanoid()}],
+  'train': [{ title: 'add linens', price: '5', id: nanoid() }, { title: 'choose coupe', price: '15', id: nanoid() }, { title: 'add food', price: '15', id: nanoid() }],
+  'ship': [{ title: 'add luggage', price: '30', id: nanoid() }, { title: 'take a tour', price: '20', id: nanoid() }, { title: 'add dinner', price: '15', id: nanoid() }, { title: 'fishing', price: 40 }],
+  'drive': [{ title: 'refueling', price: '20', id: nanoid() }, { title: 'add trailer', price: '100', id: nanoid() }],
+  'flight': [{ title: 'add luggage', price: '30', id: nanoid() }, { title: 'switch to comfort class', price: '40', id: nanoid() }, { title: 'add meal', price: '15', id: nanoid() }, { title: 'choose seat', price: '10', id: nanoid() }, { title: 'travel by train', price: '40', id: nanoid() }],
+  'check-in': [{ title: 'switch to comfort class', price: '40', id: nanoid() }, { title: 'add meal', price: '15', id: nanoid() }, { title: 'choose seat', price: '10', id: nanoid() }],
   'sightseeing': [],
-  'restaurant': [{title: 'add meal', price: '15', id: nanoid()}, {title: 'take tips', price: '5', id: nanoid()}, {title: 'asjdfjasdf', price: '234', id: nanoid()}]
+  'restaurant': [{ title: 'add meal', price: '15', id: nanoid() }, { title: 'take tips', price: '5', id: nanoid() }, { title: 'asjdfjasdf', price: '234', id: nanoid() }]
 };
 
 const generatePictures = () => {

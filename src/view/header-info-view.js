@@ -1,7 +1,7 @@
 import {createElement} from '../render.js';
 
-const createHeaderInfoTemplate = (pointStart) => {
-  const {destination} = pointStart;
+const createHeaderInfoTemplate = () => {
+  const destination = 'Monaco';
 
   return `<section class="trip-main__trip-info  trip-info">
     <div class="trip-info__main">

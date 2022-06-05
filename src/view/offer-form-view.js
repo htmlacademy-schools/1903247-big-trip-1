@@ -14,17 +14,27 @@ const createPointEditOffersTemplate = (offer) => (
 </div>`
 );
 
-const createOfferForm = (data = {}) => {
-  const { pointType = 'taxi', destination = '', price = 0, destinationInfo, offers, startEventDate, endEventDate } = data;
+const createDestinationPicturesTemplate = (picture) => (
+  `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`
+);
 
-  const offersOfType = offers[pointType];
+const createOfferForm = (data = {}) => {
+  const { pointType = 'taxi', destination, price = 0, offers, startEventDate, endEventDate, id } = data;
 
   let offersList = '';
+  let pictureList = '';
 
-  offersOfType.forEach((offer) => {
+  offers.forEach((offer) => {
     const offerCurrent = createPointEditOffersTemplate(offer);
     offersList += offerCurrent;
   });
+
+  if (destination.pictures.length !== 0) {
+    destination.pictures.forEach((picture) => {
+      const pictureCurrent = createDestinationPicturesTemplate(picture);
+      pictureList += pictureCurrent;
+    });
+  }
 
   return `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
@@ -92,7 +102,7 @@ const createOfferForm = (data = {}) => {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${pointType}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination.name}" list="destination-list-1">
             <datalist id="destination-list-1">
               <option value="Ekaterinburg"></option>
               <option value="Moscow"></option>
@@ -128,24 +138,20 @@ const createOfferForm = (data = {}) => {
         </header>
         <section class="event__details">
 
-          ${offersOfType.length !== 0 ? `<section class="event__section  event__section--offers">
+          ${offers.length !== 0 ? `<section class="event__section  event__section--offers">
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
             <div class="event__available-offers">
               ${offersList}
             </div>
           </section>` : ''}
 
-          ${destination !== '' ? `<section class="event__section  event__section--destination">
+          ${destination.name !== '' ? `<section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${destinationInfo.description}</p>
+            <p class="event__destination-description">${destination.description}</p>
 
             <div class="event__photos-container">
               <div class="event__photos-tape">
-                <img class="event__photo" src="${destinationInfo.pictures[0]}" alt="Event photo">
-                <img class="event__photo" src="${destinationInfo.pictures[1]}" alt="Event photo">
-                <img class="event__photo" src="${destinationInfo.pictures[2]}" alt="Event photo">
-                <img class="event__photo" src="${destinationInfo.pictures[3]}" alt="Event photo">
-                <img class="event__photo" src="${destinationInfo.pictures[4]}" alt="Event photo">
+                ${pictureList}
               </div>
             </div>
           </section>` : ''}
