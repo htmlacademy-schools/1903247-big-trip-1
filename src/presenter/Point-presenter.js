@@ -10,6 +10,11 @@ const Mode = {
   CREATION: 'CREATION'
 };
 
+export const State = {
+  SAVING: 'SAVING',
+  DELETING: 'DELETING'
+};
+
 export default class PointPresenter {
   #pointContainer = null;
 
@@ -73,6 +78,27 @@ export default class PointPresenter {
   destroy = () => {
     remove(this.#pointComponent);
     remove(this.#pointEditComponent);
+  }
+
+  setViewState = (state) => {
+    if (this.#mode === Mode.DEFAULT) {
+      return;
+    }
+
+    switch (state) {
+      case State.SAVING:
+        this.#pointEditComponent.updateData({
+          isDisabled: true,
+          isSaving: true,
+        });
+        break;
+      case State.DELETING:
+        this.#pointEditComponent.updateData({
+          isDisabled: true,
+          isDeleting: true,
+        });
+        break;
+    }
   }
 
   #replacePointToForm = () => {

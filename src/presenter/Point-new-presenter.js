@@ -50,13 +50,20 @@ export default class PointNewPresenter {
     }
   }
 
+  setSaving = () => {
+    this.#pointEditComponent.updateData({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
   #handleFormSubmit = (point) => {
     this.#changeData(
       UserAction.ADD_POINT,
       UpdateType.MINOR,
       point,
     );
-    this.destroy();
+    //this.destroy();
   }
 
   #handleDeleteClick = () => {
