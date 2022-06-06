@@ -4,9 +4,9 @@ import dayjs from 'dayjs';
 import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 
-const createPointEditOffersTemplate = (offer) => (
+const createPointEditOffersTemplate = (offer, isDisabled) => (
   `<div class="event__offer-selector">
-  <input class="event__offer-checkbox  visually-hidden"  type="checkbox" name="event-offer-luggage" id="${offer.id}">
+  <input class="event__offer-checkbox  visually-hidden"  type="checkbox" name="event-offer-luggage" id="${offer.id}" ${isDisabled ? 'disabled' : ''}>
   <label class="event__offer-label" for="${offer.id}">
     <span class="event__offer-title">${offer.title}</span>
     &plus; <span class="event__offer-price">${offer.price}</span>&euro;&nbsp;
@@ -14,17 +14,27 @@ const createPointEditOffersTemplate = (offer) => (
 </div>`
 );
 
-const createOfferForm = (data = {}) => {
-  const { pointType = 'taxi', destination = '', price = 0, destinationInfo, offers, startEventDate, endEventDate } = data;
+const createDestinationPicturesTemplate = (picture) => (
+  `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`
+);
 
-  const offersOfType = offers[pointType];
+const createOfferForm = (data = {}) => {
+  const { pointType = 'taxi', destination, price = 0, offers, startEventDate, endEventDate, id, isDisabled, isSaving, isDeleting } = data;
 
   let offersList = '';
+  let pictureList = '';
 
-  offersOfType.forEach((offer) => {
-    const offerCurrent = createPointEditOffersTemplate(offer);
+  offers.forEach((offer) => {
+    const offerCurrent = createPointEditOffersTemplate(offer, isDisabled);
     offersList += offerCurrent;
   });
+
+  if (destination.pictures.length !== 0) {
+    destination.pictures.forEach((picture) => {
+      const pictureCurrent = createDestinationPicturesTemplate(picture);
+      pictureList += pictureCurrent;
+    });
+  }
 
   return `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
@@ -34,7 +44,7 @@ const createOfferForm = (data = {}) => {
               <span class="visually-hidden">Choose event type</span>
               <img class="event__type-icon" width="17" height="17" src="img/icons/${pointType}.png" alt="Event type icon">
             </label>
-            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+            <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox" ${isDisabled ? 'disabled' : ''}>
 
             <div class="event__type-list">
               <fieldset class="event__type-group">
@@ -92,7 +102,7 @@ const createOfferForm = (data = {}) => {
             <label class="event__label  event__type-output" for="event-destination-1">
               ${pointType}
             </label>
-            <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination}" list="destination-list-1">
+            <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination.name}" list="destination-list-1" ${isDisabled ? 'disabled' : ''}>
             <datalist id="destination-list-1">
               <option value="Ekaterinburg"></option>
               <option value="Moscow"></option>
@@ -105,10 +115,10 @@ const createOfferForm = (data = {}) => {
 
           <div class="event__field-group  event__field-group--time">
             <label class="visually-hidden" for="event-start-time-1">From</label>
-            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(startEventDate).format('DD/MM/YY H:m')}">
+            <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${dayjs(startEventDate).format('DD/MM/YY H:m')}" ${isDisabled ? 'disabled' : ''}>
             &mdash;
             <label class="visually-hidden" for="event-end-time-1">To</label>
-            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(endEventDate).format('DD/MM/YY H:m')}">
+            <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${dayjs(endEventDate).format('DD/MM/YY H:m')}" ${isDisabled ? 'disabled' : ''}>
           </div>
 
           <div class="event__field-group  event__field-group--price">
@@ -116,36 +126,34 @@ const createOfferForm = (data = {}) => {
               <span class="visually-hidden">Price</span>
               &euro;
             </label>
-            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}">
+            <input class="event__input  event__input--price" id="event-price-1" type="number" name="event-price" value="${price}" ${isDisabled ? 'disabled' : ''}>
           </div>
 
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>
+            ${isSaving ? 'Saving...' : 'Save'}
+          </button>
 
-          <button class="event__reset-btn" type="reset">Delete</button>
+          <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
                   <button class="event__rollup-btn" type="button">
                     <span class="visually-hidden">Open event</span>
                   </button>
         </header>
         <section class="event__details">
 
-          ${offersOfType.length !== 0 ? `<section class="event__section  event__section--offers">
+          ${offers.length !== 0 ? `<section class="event__section  event__section--offers">
             <h3 class="event__section-title  event__section-title--offers">Offers</h3>
             <div class="event__available-offers">
               ${offersList}
             </div>
           </section>` : ''}
 
-          ${destination !== '' ? `<section class="event__section  event__section--destination">
+          ${destination.name !== '' ? `<section class="event__section  event__section--destination">
             <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-            <p class="event__destination-description">${destinationInfo.description}</p>
+            <p class="event__destination-description">${destination.description}</p>
 
             <div class="event__photos-container">
               <div class="event__photos-tape">
-                <img class="event__photo" src="${destinationInfo.pictures[0]}" alt="Event photo">
-                <img class="event__photo" src="${destinationInfo.pictures[1]}" alt="Event photo">
-                <img class="event__photo" src="${destinationInfo.pictures[2]}" alt="Event photo">
-                <img class="event__photo" src="${destinationInfo.pictures[3]}" alt="Event photo">
-                <img class="event__photo" src="${destinationInfo.pictures[4]}" alt="Event photo">
+                ${pictureList}
               </div>
             </div>
           </section>` : ''}
@@ -270,7 +278,9 @@ export default class OfferFormView extends SmartView {
 
   static parsePointToData = (point) => ({
     ...point,
-    //isPointDestination: point.destination !== null,
+    isDisabled: false,
+    isDeleting: false,
+    isSaving: false,
   });
 
   static parseDataToPoint = (data) => {
@@ -281,6 +291,9 @@ export default class OfferFormView extends SmartView {
     }
 
     delete point.isPointDestination;
+    delete point.isDeleting;
+    delete point.isDisabled;
+    delete point.isSaving;
 
     return point;
   }

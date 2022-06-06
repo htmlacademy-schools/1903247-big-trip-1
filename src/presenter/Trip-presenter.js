@@ -2,13 +2,15 @@ import SortView from '../view/sort-view';
 import PointListView from '../view/point-list-view';
 import MessageWithoutPointsView from '../view/empty-points-list';
 import { remove, render, renderPosition } from '../render.js';
-import PointPresenter from './Point-presenter';
+import PointPresenter, { State as PointPresenterViewState } from './Point-presenter';
 
 import { SortType, sortPointsByPrice, sortPointsByTime } from '../utils/sort-functions';
 import { FilterType, UpdateType, UserAction } from '../const';
 import PointNewPresenter from './Point-new-presenter';
-import { generatePoint } from '../mock/point';
+//import { generatePoint } from '../mock/point';
 import { filter } from '../utils/filter';
+import LoadingView from '../view/loading-view';
+import { nanoid } from 'nanoid';
 
 
 export default class TripPresenter {
@@ -19,12 +21,13 @@ export default class TripPresenter {
   #noPointsComponent = null;
   #sortComponent = null;
   #pointListComponent = new PointListView();
-
+  #loadingComponent = new LoadingView();
 
   #pointPresenter = new Map();
   #pointNewPresenter = null;
   #currentSortType = SortType.DAY;
   #filterType = FilterType.EVERYTHING;
+  #isLoading = true;
 
   #renderedTotalPrice = 0;
 
@@ -62,12 +65,9 @@ export default class TripPresenter {
   }
 
   createNewPoint = (callback) => {
-    const point = generatePoint();
-    point.destination = '';
-    point.pointType = 'taxi';
-    point.price = 0;
+    const point = this.#generatePoint();
 
-    const createNewPointData = {...point, isCreatePoint: true};
+    const createNewPointData = { ...point, isCreatePoint: true };
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#handleModeChange();
@@ -75,13 +75,28 @@ export default class TripPresenter {
   }
 
   destroy = () => {
-    this.#clearBoard({resetRenderedTotalPrice: true, resetSortType: true});
+    this.#clearBoard({ resetRenderedTotalPrice: true, resetSortType: true });
 
     remove(this.#pointListComponent);
 
     this.#pointsModel.removeObserver(this.#handleModeEvent);
     this.#filterModel.removeObserver(this.#handleModeEvent);
   }
+
+  #generatePoint = () => ({
+    pointType: 'taxi',
+    id: nanoid(),
+    price: 0,
+    offers: [],
+    destination: {
+      name: '',
+      description: '',
+      pictures: []
+    },
+    isFavorite: false,
+    startEventDate: new Date(),
+    endEventDate: new Date()
+  });
 
   #handleModeEvent = (updateType, data) => {
     switch (updateType) {
@@ -93,22 +108,43 @@ export default class TripPresenter {
         this.#renderBoard();
         break;
       case UpdateType.MAJOR:
-        this.#clearBoard({resetRenderedTotalPrice: true, resetSortType: true});
+        this.#clearBoard({ resetRenderedTotalPrice: true, resetSortType: true });
+        this.#renderBoard();
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
         this.#renderBoard();
         break;
     }
   }
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this.#pointsModel.updatePoint(updateType, update);
+        this.#pointPresenter.get(update.id).setViewState(PointPresenterViewState.SAVING);
+
+        try {
+          await this.#pointsModel.updatePoint(updateType, update);
+        } catch (err) {
+          this.#pointPresenter.get(update.id).setViewState(PointPresenterViewState.ABORTING);
+        }
         break;
       case UserAction.ADD_POINT:
-        this.#pointsModel.addPoint(updateType, update);
+        this.#pointNewPresenter.setSaving();
+        try {
+          await this.#pointsModel.addPoint(updateType, update);
+        } catch (err) {
+          this.#pointNewPresenter.setAborting();
+        }
         break;
       case UserAction.DELETE_POINT:
-        this.#pointsModel.deletePoint(updateType, update);
+        this.#pointPresenter.get(update.id).setViewState(PointPresenterViewState.DELETING);
+        try {
+          await this.#pointsModel.deletePoint(updateType, update);
+        } catch (err) {
+          this.#pointPresenter.get(update.id).setViewState(PointPresenterViewState.ABORTING);
+        }
     }
   }
 
@@ -165,6 +201,9 @@ export default class TripPresenter {
     this.#sortComponent.setSortChangeClickHandler(this.#handleSortTypeChange);
   }
 
+  #renderLoading = () => {
+    render(this.#pointListComponent, this.#loadingComponent, renderPosition.AFTERBEGIN);
+  }
 
   #renderNoPoints = () => {
     this.#noPointsComponent = new MessageWithoutPointsView(this.#filterType);
@@ -180,6 +219,7 @@ export default class TripPresenter {
     this.#pointPresenter.clear();
 
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
 
     if (this.#noPointsComponent) {
       remove(this.#noPointsComponent);
@@ -197,12 +237,16 @@ export default class TripPresenter {
   }
 
   #renderBoard = () => {
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    }
     if (this.points.length === 0) {
       this.#renderNoPoints();
       return;
     }
+
     this.#renderSort();
     this.#renderPoints(this.points);
-
   }
 }
