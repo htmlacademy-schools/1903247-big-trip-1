@@ -36,7 +36,6 @@ const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.ADD_NEW_POINT:
       // Скрыть статистику
-      // Показать фильтры
       tripPresenter.destroy();
       tripPresenter.init();
       tripPresenter.createNewPoint(handlePointNewFormClose);
