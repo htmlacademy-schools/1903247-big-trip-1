@@ -11,12 +11,14 @@ import PointNewPresenter from './Point-new-presenter';
 import { filter } from '../utils/filter';
 import LoadingView from '../view/loading-view';
 import { nanoid } from 'nanoid';
+import StatisticView from '../view/statistics-view';
 
 
 export default class TripPresenter {
   #tripContainer = null;
   #pointsModel = null;
   #filterModel = null;
+  #statisticComponent = null;
 
   #noPointsComponent = null;
   #sortComponent = null;
@@ -64,14 +66,25 @@ export default class TripPresenter {
     this.#renderBoard();
   }
 
-  createNewPoint = (callback) => {
+  createNewPoint = () => {
+    remove(this.#statisticComponent);
+
     const point = this.#generatePoint();
 
     const createNewPointData = { ...point, isCreatePoint: true };
     this.#currentSortType = SortType.DAY;
-    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    //this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#handleModeChange();
-    this.#pointNewPresenter.init(createNewPointData, callback);
+    this.#pointNewPresenter.init(createNewPointData);
+  }
+
+  createStatistic = () => {
+    this.#statisticComponent = new StatisticView(this.#pointsModel.points);
+    render(this.#tripContainer, this.#statisticComponent, renderPosition.BEFOREEND);
+  }
+
+  deleteStatistic = () =>{
+    remove(this.#statisticComponent);
   }
 
   destroy = () => {

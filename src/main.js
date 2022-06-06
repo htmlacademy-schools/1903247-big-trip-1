@@ -1,12 +1,13 @@
 import HeaderInfoView from './view/header-info-view';
 import SiteMenuView from './view/site-menu-view';
-import { render, renderPosition } from './render';
+import { render, renderPosition, remove } from './render';
 import TripPresenter from './presenter/Trip-presenter';
 import PointsModels from './model/points-model';
 import FilterModel from './model/filter-model';
 import FilterPresenter from './presenter/Filter-presenter';
 import { MenuItem } from './const';
 import ApiService from './api-service';
+import StatisticView from './view/statistics-view';
 
 
 const AUTHORIAZATION = 'Basic sdjrj34jwkw34';
@@ -32,10 +33,12 @@ const handlePointNewFormClose = () => {
   siteMenuComponent.setMenuItem(MenuItem.TABLE);
 };
 
+let statisticsCOmponent = null;
+
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.ADD_NEW_POINT:
-      // Скрыть статистику
+      remove(statisticsCOmponent);
       filterPresenter.destroy();
       filterPresenter.init();
       tripPresenter.destroy();
@@ -49,12 +52,16 @@ const handleSiteMenuClick = (menuItem) => {
       siteMenuComponent.setMenuItem(MenuItem.TABLE);
       tripPresenter.init();
       // Скрыть статистику
+      remove(statisticsCOmponent);
       break;
     case MenuItem.STATS:
       filterPresenter.destroy();
-      // Скрыть фильтры
-      siteMenuComponent.setMenuItem(MenuItem.STATS);
       tripPresenter.destroy();
+      // Скрыть фильтры
+      statisticsCOmponent = new StatisticView(pointsModel.points);
+      render(mainContainer, statisticsCOmponent, renderPosition.BEFOREEND);
+      //siteMenuComponent.setMenuItem(MenuItem.STATS);
+      //tripPresenter.createStatistic();
       // Показать статистику
       break;
   }
@@ -68,12 +75,15 @@ const handleSiteMenuClick = (menuItem) => {
 
 //render(filtersElement, new FilterView(), renderPosition.BEFOREEND);
 
+// для отладки
 tripPresenter.init();
 filterPresenter.init();
+
 
 document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
   evt.preventDefault();
   tripPresenter.createNewPoint();
+  handlePointNewFormClose();
 });
 
 pointsModel.init().finally(() => {
