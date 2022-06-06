@@ -34,6 +34,7 @@ const handlePointNewFormClose = () => {
 };
 
 let statisticsCOmponent = null;
+let currentMenuItem = 'table';
 
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
@@ -50,32 +51,25 @@ const handleSiteMenuClick = (menuItem) => {
     case MenuItem.TABLE:
       filterPresenter.init();
       siteMenuComponent.setMenuItem(MenuItem.TABLE);
-      tripPresenter.init();
-      // Скрыть статистику
+      if (currentMenuItem !== 'table') {
+        tripPresenter.init();
+        currentMenuItem = 'table';
+      }
       remove(statisticsCOmponent);
       break;
     case MenuItem.STATS:
       filterPresenter.destroy();
       tripPresenter.destroy();
-      // Скрыть фильтры
-      statisticsCOmponent = new StatisticView(pointsModel.points);
-      render(mainContainer, statisticsCOmponent, renderPosition.BEFOREEND);
-      //siteMenuComponent.setMenuItem(MenuItem.STATS);
-      //tripPresenter.createStatistic();
-      // Показать статистику
+      if (currentMenuItem !== 'stats') {
+        statisticsCOmponent = new StatisticView(pointsModel.points);
+        render(mainContainer, statisticsCOmponent, renderPosition.BEFOREEND);
+        siteMenuComponent.setMenuItem(MenuItem.STATS);
+        currentMenuItem = 'stats';
+      }
       break;
   }
 };
 
-
-// if (points.length !== 0) {
-//   render(headerMenu, new HeaderInfoView(points[0]).element, renderPosition.AFTERBEGIN);
-// }
-
-
-//render(filtersElement, new FilterView(), renderPosition.BEFOREEND);
-
-// для отладки
 tripPresenter.init();
 filterPresenter.init();
 

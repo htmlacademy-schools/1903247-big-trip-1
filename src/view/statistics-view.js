@@ -1,11 +1,10 @@
 import { Chart } from 'chart.js';
 import SmartView from './smart-view';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import dayjs from 'dayjs';
 
-const CreateStatisticTemplate = (points) => {
-  const data = points;
-
-  return `<section class="statistics">
+const CreateStatisticTemplate = () => (
+  `<section class="statistics">
   <h2 class="visually-hidden">Trip statistics</h2>
   <div class="statistics__item">
     <canvas class="statistics__chart" id="money" width="900"></canvas>
@@ -16,55 +15,51 @@ const CreateStatisticTemplate = (points) => {
   <div class="statistics__item">
     <canvas class="statistics__chart" id="time" width="900"></canvas>
   </div>
-</section>`;
-};
+</section>`
+);
 
-const CountOfferPrice = (points)=>{
+const CountOfferPrice = (points) => {
   const offerPrices = {
-    'taxi' :0,
-    'bus' :0,
-    'train' :0,
-    'ship' :0,
-    'drive' :0,
-    'flight' :0,
-    'check-in' :0,
-    'sightseeing' :0,
-    'restaurant' :0,
+    'taxi': 0,
+    'bus': 0,
+    'train': 0,
+    'ship': 0,
+    'drive': 0,
+    'flight': 0,
+    'check-in': 0,
+    'sightseeing': 0,
+    'restaurant': 0,
   };
 
-  for(const offer in points){
-    if(points[offer].length !== 0){
-      for(const point of points[offer])
-      {offerPrices[offer] += Number(point.price);}
+  for (const offer in points) {
+    if (points[offer].length !== 0) {
+      for (const point of points[offer]) { offerPrices[offer] += Number(point.price); }
     }
   }
   return offerPrices;
 };
 
-const CountOfferTime = (points)=>{
+const CountOfferTime = (points) => {
   const offerTimes = {
-    'taxi' :0,
-    'bus' :0,
-    'train' :0,
-    'ship' :0,
-    'drive' :0,
-    'flight' :0,
-    'check-in' :0,
-    'sightseeing' :0,
-    'restaurant' :0,
+    'taxi': 0,
+    'bus': 0,
+    'train': 0,
+    'ship': 0,
+    'drive': 0,
+    'flight': 0,
+    'check-in': 0,
+    'sightseeing': 0,
+    'restaurant': 0,
   };
   let currentTime = 0;
 
-  for(const offer in points){
-    if(points[offer].length !== 0){
-      for(const point of points[offer])
-      {
-        currentTime += Number(point.waitingTime);
+  for (const offer in points) {
+    if (points[offer].length !== 0) {
+      for (const point of points[offer]) {
+        const timeBetweenDateInMin = dayjs(point.endEventDate).diff(point.startEventDate, 'minute');
+        currentTime += Number(timeBetweenDateInMin);
       }
-      // const days = Math.floor(currentTime / 1440);
-      // const hours = Math.floor((currentTime % 1440) / 60);
-      // const minutes = Math.floor((currentTime % 1440)) % 60;
-      // offerTimes[offer] = `${days }D ${hours }H ${minutes }M`;
+
       offerTimes[offer] = currentTime;
       currentTime = 0;
     }
@@ -72,14 +67,14 @@ const CountOfferTime = (points)=>{
   return offerTimes;
 };
 
-const FormatDate =(date) => {
+const FormatDate = (date) => {
   const days = Math.floor(date / 1440) === 0 ? '' : `${Math.floor(date / 1440)}D `;
   const hours = Math.floor((date % 1440) / 60) === 0 ? '' : `${Math.floor((date % 1440) / 60)}H `;
   const minutes = `${Math.floor(Math.floor((date % 1440) % 60))}M`;
 
   return days + hours + minutes;
 };
-const CreateStatisticMoney = (container, points) =>{
+const CreateStatisticMoney = (container, points) => {
   const moneyCtx = container.querySelector('#money');
   const offerPrices = CountOfferPrice(points);
   const BAR_HEIGHT = 110;
@@ -94,8 +89,8 @@ const CreateStatisticMoney = (container, points) =>{
         data: [offerPrices['taxi'], offerPrices['bus'], offerPrices['train'],
           offerPrices['ship'], offerPrices['flight'], offerPrices['drive'],
           offerPrices['check-in'], offerPrices['sightseeing'], offerPrices['restaurant']],
-        backgroundColor: '#ffffff',
-        hoverBackgroundColor: '#ffffff',
+        backgroundColor: '#67b7ef',
+        hoverBackgroundColor: '#7bc8ff',
         anchor: 'start',
         barThickness: 48,
         minBarLength: 40,
@@ -156,7 +151,7 @@ const CreateStatisticMoney = (container, points) =>{
   return moneyChart;
 };
 
-const createStatisticType = (container, points) =>{
+const createStatisticType = (container, points) => {
   const typeCtx = container.querySelector('#type');
 
   const BAR_HEIGHT = 110;
@@ -171,8 +166,8 @@ const createStatisticType = (container, points) =>{
         data: [points['taxi'].length, points['bus'].length, points['train'].length,
           points['ship'].length, points['flight'].length, points['drive'].length,
           points['check-in'].length, points['sightseeing'].length, points['restaurant'].length],
-        backgroundColor: '#ffffff',
-        hoverBackgroundColor: '#ffffff',
+        backgroundColor: '#7bef6d',
+        hoverBackgroundColor: '#8afc8c',
         anchor: 'start',
         barThickness: 48,
         minBarLength: 40,
@@ -232,7 +227,7 @@ const createStatisticType = (container, points) =>{
   return typeChart;
 };
 
-const CreateStatisticTime = (container, points) =>{
+const CreateStatisticTime = (container, points) => {
   const timeCtx = container.querySelector('#time');
 
   const offerTimes = CountOfferTime(points);
@@ -248,8 +243,8 @@ const CreateStatisticTime = (container, points) =>{
         data: [offerTimes['taxi'], offerTimes['bus'], offerTimes['train'],
           offerTimes['ship'], offerTimes['flight'], offerTimes['drive'],
           offerTimes['check-in'], offerTimes['sightseeing'], offerTimes['restaurant']],
-        backgroundColor: '#ffffff',
-        hoverBackgroundColor: '#ffffff',
+        backgroundColor: '#f1e476',
+        hoverBackgroundColor: '#faf092',
         anchor: 'start',
         barThickness: 48,
         minBarLength: 40,
@@ -309,7 +304,7 @@ const CreateStatisticTime = (container, points) =>{
   return typeChart;
 };
 
-export default class StatisticView extends SmartView{
+export default class StatisticView extends SmartView {
   #moneyStats = null;
   #typeStats = null;
   #timeStats = null;
@@ -321,40 +316,39 @@ export default class StatisticView extends SmartView{
     this.#setCharts();
   }
 
-  get template(){
+  get template() {
     return CreateStatisticTemplate();
   }
 
-  removeElement(){
+  removeElement() {
     super.removeElement();
 
-    if(this.#moneyStats){
+    if (this.#moneyStats) {
       this.#moneyStats.destroy();
       this.#moneyStats = null;
     }
 
-    if(this.#typeStats){
+    if (this.#typeStats) {
       this.#typeStats.destroy();
       this.#typeStats = null;
     }
-    if(this.#timeStats){
+    if (this.#timeStats) {
       this.#timeStats.destroy();
       this.#timeStats = null;
     }
   }
 
-  #setCharts = () =>
-  {
+  #setCharts = () => {
     const points = {
-      'taxi':this._data.filter((point) => point.pointType === 'taxi'),
-      'bus':this._data.filter((point) => point.pointType === 'bus'),
-      'train':this._data.filter((point) => point.pointType === 'train'),
-      'ship':this._data.filter((point) => point.pointType === 'ship'),
-      'drive':this._data.filter((point) => point.pointType === 'drive'),
-      'flight':this._data.filter((point) => point.pointType === 'flight'),
-      'check-in':this._data.filter((point) => point.pointType === 'check-in'),
-      'sightseeing':this._data.filter((point) => point.pointType === 'sightseeing'),
-      'restaurant':this._data.filter((point) => point.pointType === 'restaurant')
+      'taxi': this._data.filter((point) => point.pointType === 'taxi'),
+      'bus': this._data.filter((point) => point.pointType === 'bus'),
+      'train': this._data.filter((point) => point.pointType === 'train'),
+      'ship': this._data.filter((point) => point.pointType === 'ship'),
+      'drive': this._data.filter((point) => point.pointType === 'drive'),
+      'flight': this._data.filter((point) => point.pointType === 'flight'),
+      'check-in': this._data.filter((point) => point.pointType === 'check-in'),
+      'sightseeing': this._data.filter((point) => point.pointType === 'sightseeing'),
+      'restaurant': this._data.filter((point) => point.pointType === 'restaurant')
     };
     this.#moneyStats = CreateStatisticMoney(this.element, points);
     this.#typeStats = createStatisticType(this.element, points);
