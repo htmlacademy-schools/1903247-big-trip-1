@@ -9,7 +9,7 @@ const createFilterTemplate = ( currentFilterType) => (
       <label class="trip-filters__filter-label" for="filter-everything">Everything</label>
     </div>
     <div class="trip-filters__filter">
-      <input id="filter-future" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${FilterType.FUTURE}"  ${currentFilterType === FilterType.FUTURE ? 'checked' : ''}>
+      <input id="filter-future" class="trip-filters__filter-input  visually-hidden" type="radio" name="trip-filter" value="${FilterType.FUTURE}"  ${currentFilterType === FilterType.FUTURE ? 'checked' : ''} disabled>
       <label class="trip-filters__filter-label" for="filter-future">Future</label>
     </div>
     <div class="trip-filters__filter">

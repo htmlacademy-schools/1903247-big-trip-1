@@ -10,7 +10,7 @@ import ApiService from './api-service';
 import StatisticView from './view/statistics-view';
 
 
-const AUTHORIAZATION = 'Basic sdjrj34jwkw34';
+const AUTHORIAZATION = 'Basic sdjrj34fjwkw34';
 const END_POINT = 'https://16.ecmascript.pages.academy/big-trip';
 
 
