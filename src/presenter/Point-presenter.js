@@ -43,8 +43,8 @@ export default class PointPresenter {
     const prevPointComponent = this.#pointComponent;
     const prevEditPointComponent = this.#pointEditComponent;
 
-    this.#pointComponent = new PointView(point);
-    this.#pointEditComponent = new OfferFormView(point, this.#destinations, this.#allOffers);
+    this.#pointComponent = new PointView(this.#point);
+    this.#pointEditComponent = new OfferFormView(this.#point, this.#destinations, this.#allOffers);
 
     this.#pointComponent.setEditClickHandler(this.#handleEditClick);
     this.#pointEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
@@ -57,10 +57,10 @@ export default class PointPresenter {
     //   this.#replacePointToForm();
     //   document.addEventListener('keydown', this.#onEscKeydowm);
     // });
-    this.#pointEditComponent.setFormSubmitHandler(() => {
-      this.#replaceFormToPoint();
-      document.removeEventListener('keydown', this.#onEscKeydowm);
-    });
+    // this.#pointEditComponent.setFormSubmitHandler(() => {
+    //   this.#replaceFormToPoint();
+    //   document.removeEventListener('keydown', this.#onEscKeydowm);
+    // });
 
     render(this.#pointContainer, this.#pointComponent, renderPosition.BEFOREEND);
 
@@ -68,7 +68,7 @@ export default class PointPresenter {
       replace(this.#pointComponent, prevPointComponent);
     }
     if (this.#mode === Mode.EDITING && prevEditPointComponent) {
-      replace(this.#pointEditComponent, prevEditPointComponent);
+      replace(this.#pointComponent, prevEditPointComponent);
     }
 
     remove(prevPointComponent);
@@ -135,12 +135,6 @@ export default class PointPresenter {
     document.addEventListener('keydown', this.#onEscKeydowm);
   }
 
-  #onArrowClick = () => {
-    if (this.#point.querySelector('.event__rollup-btn')) {
-      this.#replaceFormToPoint();
-    }
-  }
-
   #onEscKeydowm = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
@@ -150,7 +144,6 @@ export default class PointPresenter {
   }
 
   #handleFavorite = () => {
-    this.#changeData({ ...this.#point, favorite: !this.#point.isFavorite });
     this.#changeData(UserAction.UPDATE_POINT, UpdateType.PATCH, { ...this.#point, isFavorite: !this.#point.isFavorite });
   }
 
@@ -161,7 +154,7 @@ export default class PointPresenter {
     this.#replaceFormToPoint();
     this.#changeData(
       UserAction.UPDATE_POINT,
-      UpdateType.PATCH,
+      UpdateType.MINOR,
       update
     );
   }

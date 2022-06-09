@@ -170,7 +170,7 @@ export default class OfferFormView extends SmartView {
 
   constructor(point) {
     super();
-    this._data = OfferFormView.parsePointToData(point);
+    this._data = { ...point};
     this.#setInnerHandlers();
     this.#setDatepickerStart();
     this.#setDatepickerEnd();
@@ -275,9 +275,20 @@ export default class OfferFormView extends SmartView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
+    this._data.isDisabled = false;
+    this._data.isSaving = false;
+    this._data.isDeleting = false;
     const priceValue = this.element.querySelector('.event__input--price').value;
-    this.updateData({price: priceValue});
-    // console.log(this._data);
+    this._data.price = Number(priceValue);
+
+    // const offersTemplate = document.querySelectorAll('.event__offer-checkbox');
+    // const filteredOffersCheked = Array.from(offersTemplate).filter((checkbox) => checkbox.checked).map((checkbox) => checkbox.value.split('-').join(' '));
+
+    // const filteredOffersData = Array.from(this._data.type.currentType.allOffer)
+    //   .filter((offer) =>
+    //     filteredOffersCheked
+    //       .some((filteredOfferCheked) => filteredOfferCheked === offer.title.toLowerCase()));
+    // this._data.type.currentType.selectedOffers = filteredOffersData;
 
     this._callback.formSubmit(this._data);
     // this._callback.formSubmit(OfferFormView.parseDataToPoint(this._data));
