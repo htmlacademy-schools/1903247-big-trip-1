@@ -12,6 +12,7 @@ import { filter } from '../utils/filter';
 import LoadingView from '../view/loading-view';
 import { nanoid } from 'nanoid';
 import StatisticView from '../view/statistics-view';
+import HeaderInfoView from '../view/header-info-view';
 
 
 export default class TripPresenter {
@@ -19,6 +20,7 @@ export default class TripPresenter {
   #pointsModel = null;
   #filterModel = null;
   #statisticComponent = null;
+  #infoTripComponent = null;
 
   #noPointsComponent = null;
   #sortComponent = null;
@@ -32,11 +34,15 @@ export default class TripPresenter {
   #isLoading = true;
 
   #renderedTotalPrice = 0;
+  #destinations = null;
+  #offers = null;
+  #apiService = null;
 
-  constructor(tripContainer, pointsModel, filterModel) {
+  constructor(tripContainer, pointsModel, filterModel, apiService) {
     this.#tripContainer = tripContainer;
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
+    this.#apiService = apiService;
 
     this.#pointNewPresenter = new PointNewPresenter(this.#pointListComponent, this.#handleViewAction);
   }
@@ -56,7 +62,22 @@ export default class TripPresenter {
     return filteredPoints;
   }
 
-  init = () => {
+  // get destinations() {
+  //   return this.#pointsModel.destinations;
+  // }
+
+  init = async () => {
+    try {
+      this.#destinations = await this.#apiService.destinations;
+    } catch(err) {
+      this.#destinations = [];
+    }
+
+    try {
+      this.#offers = await this.#apiService.offers;
+    } catch(err) {
+      this.#offers = [];
+    }
 
     render(this.#tripContainer, this.#pointListComponent, renderPosition.BEFOREEND);
 
@@ -198,7 +219,7 @@ export default class TripPresenter {
   // }
 
   #renderPoint = (point) => {
-    const pointPresenter = new PointPresenter(this.#pointListComponent, this.#handleViewAction, this.#handleModeChange);
+    const pointPresenter = new PointPresenter(this.#pointListComponent, this.#handleViewAction, this.#handleModeChange, this.#destinations, this.#offers);
     pointPresenter.init(point);
     this.#pointPresenter.set(point.id, pointPresenter);
   };
@@ -216,6 +237,15 @@ export default class TripPresenter {
 
   #renderLoading = () => {
     render(this.#pointListComponent, this.#loadingComponent, renderPosition.AFTERBEGIN);
+  }
+
+  #renderHeaderInfo = () => {
+    const tripContainer = document.querySelector('.trip-main');
+    if (this.points.length > 0) {
+      remove(this.#infoTripComponent);
+      this.#infoTripComponent = new HeaderInfoView(this.points);
+      render(tripContainer, this.#infoTripComponent, renderPosition.AFTERBEGIN);
+    }
   }
 
   #renderNoPoints = () => {
@@ -259,6 +289,7 @@ export default class TripPresenter {
       return;
     }
 
+    this.#renderHeaderInfo();
     this.#renderSort();
     this.#renderPoints(this.points);
   }

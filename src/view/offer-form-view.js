@@ -21,6 +21,7 @@ const createDestinationPicturesTemplate = (picture) => (
 const createOfferForm = (data = {}) => {
   const { pointType = 'taxi', destination, price = 0, offers, startEventDate, endEventDate, id, isDisabled, isSaving, isDeleting } = data;
 
+  //console.log(destinations);
   let offersList = '';
   let pictureList = '';
 
@@ -104,7 +105,7 @@ const createOfferForm = (data = {}) => {
             </label>
             <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination.name}" list="destination-list-1" ${isDisabled ? 'disabled' : ''}>
             <datalist id="destination-list-1">
-              <option value="Ekaterinburg"></option>
+              <option value="${destination.name}"></option>
               <option value="Moscow"></option>
               <option value="Perm"></option>
               <option value="Kyiv"></option>
@@ -198,10 +199,11 @@ export default class OfferFormView extends SmartView {
     this.#setDatepickerEnd();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setDeleteClickHandler(this._callback.deleteClick);
+    this.setcloseClickHandler(this._callback.closeClick);
   }
 
   #setInnerHandlers = () => {
-    this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationInputHandler);
+    // this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationInputHandler);
     this.element.querySelectorAll('.event__type-input').forEach((element) => {
       element.addEventListener('click', this.#pointTypeHandler);
     });
@@ -229,6 +231,11 @@ export default class OfferFormView extends SmartView {
   setDeleteClickHandler = (callback) => {
     this._callback.deleteClick = callback;
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
+  }
+
+  setcloseClickHandler = (callback) => {
+    this._callback.closeClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#closeClickHandler);
   }
 
   #setDatepickerStart = () => {
@@ -268,12 +275,25 @@ export default class OfferFormView extends SmartView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.formSubmit(OfferFormView.parseDataToPoint(this._data));
+    const priceValue = this.element.querySelector('.event__input--price').value;
+    this.updateData({price: priceValue});
+    // console.log(this._data);
+
+    this._callback.formSubmit(this._data);
+    // this._callback.formSubmit(OfferFormView.parseDataToPoint(this._data));
   }
 
   #formDeleteClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.deleteClick(OfferFormView.parseDataToPoint(this._data));
+  }
+
+  #closeClickHandler = (evt) => {
+    evt.preventDefault();
+    this._data.isDisabled = false;
+    this._data.isSaving = false;
+    this._data.isDeleting = false;
+    this._callback.closeClick();
   }
 
   static parsePointToData = (point) => ({
@@ -286,11 +306,6 @@ export default class OfferFormView extends SmartView {
   static parseDataToPoint = (data) => {
     const point = { ...data };
 
-    if (!point.isPointDestination) {
-      point.destination = null;
-    }
-
-    delete point.isPointDestination;
     delete point.isDeleting;
     delete point.isDisabled;
     delete point.isSaving;

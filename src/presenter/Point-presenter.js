@@ -2,7 +2,7 @@ import PointView from '../view/point-view';
 import OfferFormView from '../view/offer-form-view';
 import { remove, render, renderPosition, replace } from '../render.js';
 import { UpdateType, UserAction } from '../const';
-import dayjs from 'dayjs';
+// import dayjs from 'dayjs';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -26,10 +26,15 @@ export default class PointPresenter {
   #changeMode = null;
   #mode = Mode.DEFAULT;
 
-  constructor(pointContainer, changeData, changeMode) {
+  #destinations = null;
+  #allOffers = null;
+
+  constructor(pointContainer, changeData, changeMode, destinations, allOffers) {
     this.#pointContainer = pointContainer;
     this.#changeData = changeData;
     this.#changeMode = changeMode;
+    this.#destinations = destinations;
+    this.#allOffers = allOffers;
   }
 
   init = (point) => {
@@ -39,11 +44,13 @@ export default class PointPresenter {
     const prevEditPointComponent = this.#pointEditComponent;
 
     this.#pointComponent = new PointView(point);
-    this.#pointEditComponent = new OfferFormView(point);
+    this.#pointEditComponent = new OfferFormView(point, this.#destinations, this.#allOffers);
 
     this.#pointComponent.setEditClickHandler(this.#handleEditClick);
     this.#pointEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
+    this.#pointEditComponent.setcloseClickHandler(this.#replaceFormToPoint);
+    this.#pointComponent.setFavoriteClickHandler(this.#handleFavorite);
 
 
     // this.#pointComponent.setEditClickHandler(() => {
@@ -54,7 +61,6 @@ export default class PointPresenter {
       this.#replaceFormToPoint();
       document.removeEventListener('keydown', this.#onEscKeydowm);
     });
-    this.#pointComponent.setFavoriteClickHandler(this.#handleFavorite);
 
     render(this.#pointContainer, this.#pointComponent, renderPosition.BEFOREEND);
 
@@ -144,19 +150,20 @@ export default class PointPresenter {
   }
 
   #handleFavorite = () => {
+    this.#changeData({ ...this.#point, favorite: !this.#point.isFavorite });
     this.#changeData(UserAction.UPDATE_POINT, UpdateType.PATCH, { ...this.#point, isFavorite: !this.#point.isFavorite });
   }
 
   #handleFormSubmit = (update) => {
-    const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
-    const isMinorUpdate = !isDatesEqual(this.#point.startEventDate, update.startEventDate) || !isDatesEqual(this.#point.endEventDate, update.endEventDate);
+    // const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
+    // const isMinorUpdate = !isDatesEqual(this.#point.startEventDate, update.startEventDate) || !isDatesEqual(this.#point.endEventDate, update.endEventDate);
 
+    this.#replaceFormToPoint();
     this.#changeData(
       UserAction.UPDATE_POINT,
-      isMinorUpdate ? UpdateType.MINOR: UpdateType.PATCH,
+      UpdateType.PATCH,
       update
     );
-    this.#replaceFormToPoint();
   }
 
   #handleDeleteClick = (point) => {

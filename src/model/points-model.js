@@ -3,6 +3,8 @@ import AbstractObservable from '../utils/abstract-observers';
 
 class PointsModels extends AbstractObservable {
   #points = [];
+  #destinations = [];
+  #offers = [];
   #apiService = null;
 
   constructor(apiService) {
@@ -14,12 +16,32 @@ class PointsModels extends AbstractObservable {
     return this.#points;
   }
 
+  get destinations() {
+    return this.#destinations;
+  }
+
+  get offers() {
+    return this.#offers;
+  }
+
   init = async () => {
     try {
       const points = await this.#apiService.points;
       this.#points = points.map(this.#adaptToClient);
     } catch(err) {
       this.#points = [];
+    }
+
+    try {
+      this.#destinations = await this.#apiService.destinations;
+    } catch(err) {
+      this.#destinations = [];
+    }
+
+    try {
+      this.#offers = await this.#apiService.offers;
+    } catch(err) {
+      this.#offers = [];
     }
 
     this._notify(UpdateType.INIT);
