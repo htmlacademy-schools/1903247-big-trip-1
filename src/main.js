@@ -1,12 +1,12 @@
 import SiteMenuView from './view/site-menu-view';
-import { render, renderPosition, remove } from './render';
+import StatisticView from './view/statistics-view';
 import TripPresenter from './presenter/Trip-presenter';
+import FilterPresenter from './presenter/Filter-presenter';
 import PointsModels from './model/points-model';
 import FilterModel from './model/filter-model';
-import FilterPresenter from './presenter/Filter-presenter';
-import { MenuItem } from './const';
 import ApiService from './api-service';
-import StatisticView from './view/statistics-view';
+import { render, renderPosition, remove } from './render';
+import { MenuItem } from './const';
 
 
 const AUTHORIAZATION = 'Basic sdjfrjdr34fjwkw34';
@@ -70,8 +70,6 @@ const handleSiteMenuClick = (menuItem) => {
 };
 
 tripPresenter.init();
-// filterPresenter.init(pointsModel.points);
-
 
 buttonAddNewPoint.addEventListener('click', (evt) => {
   evt.preventDefault();
@@ -83,7 +81,6 @@ buttonAddNewPoint.addEventListener('click', (evt) => {
 pointsModel.init().finally(() => {
   filterPresenter.init(pointsModel.points);
   render(siteMenuElement, siteMenuComponent, renderPosition.AFTERBEGIN);
-  //render(headerMenu, new HeaderInfoView().element, renderPosition.AFTERBEGIN);
   //buttonAddNewPoint.disabled = false;
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 });

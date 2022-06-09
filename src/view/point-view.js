@@ -2,19 +2,6 @@ import dayjs from 'dayjs';
 import AbstractView from './abstract-view.js';
 import { formatTimeInMinute } from '../utils/time-function.js';
 
-// const createOffersTemplate = (offer) => {
-//   const offerList = document.querySelector('.event__selected-offers');
-//   if (offer.offers.length !== 0) {
-//     for (let i = 0; i <= offer.offers.length; i++) {
-
-//       offerList.insertAdjacentHTML('afterbegin', `<li class="event__offer">
-//       <span class="event__offer-title">${offer.offers[i].title} </span>
-//       &plus;&euro;&nbsp;
-//       <span class="event__offer-price">${offer.offers[i].price}</span>
-//     </li>`);
-//     }
-//   }
-// };
 
 const createPointTemplate = (point) => {
   const { pointType, price, destination, isFavorite, startEventDate, endEventDate } = point;

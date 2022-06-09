@@ -28,19 +28,19 @@ class PointsModels extends AbstractObservable {
     try {
       const points = await this.#apiService.points;
       this.#points = points.map(this.#adaptToClient);
-    } catch(err) {
+    } catch (err) {
       this.#points = [];
     }
 
     try {
       this.#destinations = await this.#apiService.destinations;
-    } catch(err) {
+    } catch (err) {
       this.#destinations = [];
     }
 
     try {
       this.#offers = await this.#apiService.offers;
-    } catch(err) {
+    } catch (err) {
       this.#offers = [];
     }
 
@@ -95,7 +95,8 @@ class PointsModels extends AbstractObservable {
   }
 
   #adaptToClient = (point) => {
-    const adaptedPoint = {...point,
+    const adaptedPoint = {
+      ...point,
       startEventDate: point['date_from'] !== null ? new Date(point['date_from']) : point['date_from'],
       endEventDate: point['date_to'] !== null ? new Date(point['date_to']) : point['date_to'],
       isFavorite: point['is_favorite'],

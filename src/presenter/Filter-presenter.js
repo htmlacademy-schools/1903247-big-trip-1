@@ -59,8 +59,6 @@ export default class FilterPresenter {
     this.#filterComponent = null;
 
     this.#filterModel.removeObserver(this.#handleModelEvent);
-
-    // this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.ALL);
   }
 
   #handleModelEvent = () => {

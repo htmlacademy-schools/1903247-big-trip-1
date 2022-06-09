@@ -43,7 +43,7 @@ const createHeaderInfoTemplate = (points) => {
 export default class HeaderInfoView extends AbstractView {
   #points = null;
 
-  constructor (points) {
+  constructor(points) {
     super();
     this.#points = points;
   }

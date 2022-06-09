@@ -2,7 +2,6 @@ import PointView from '../view/point-view';
 import OfferFormView from '../view/offer-form-view';
 import { remove, render, renderPosition, replace } from '../render.js';
 import { UpdateType, UserAction } from '../const';
-// import dayjs from 'dayjs';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -51,16 +50,6 @@ export default class PointPresenter {
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
     this.#pointEditComponent.setcloseClickHandler(this.#replaceFormToPoint);
     this.#pointComponent.setFavoriteClickHandler(this.#handleFavorite);
-
-
-    // this.#pointComponent.setEditClickHandler(() => {
-    //   this.#replacePointToForm();
-    //   document.addEventListener('keydown', this.#onEscKeydowm);
-    // });
-    // this.#pointEditComponent.setFormSubmitHandler(() => {
-    //   this.#replaceFormToPoint();
-    //   document.removeEventListener('keydown', this.#onEscKeydowm);
-    // });
 
     render(this.#pointContainer, this.#pointComponent, renderPosition.BEFOREEND);
 
@@ -148,9 +137,6 @@ export default class PointPresenter {
   }
 
   #handleFormSubmit = (update) => {
-    // const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
-    // const isMinorUpdate = !isDatesEqual(this.#point.startEventDate, update.startEventDate) || !isDatesEqual(this.#point.endEventDate, update.endEventDate);
-
     this.#replaceFormToPoint();
     this.#changeData(
       UserAction.UPDATE_POINT,

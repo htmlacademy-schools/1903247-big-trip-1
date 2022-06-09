@@ -94,7 +94,7 @@ export default class TripPresenter {
 
     const createNewPointData = { ...point, isCreatePoint: true };
     this.#currentSortType = SortType.DAY;
-    //this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#handleModeChange();
     this.#pointNewPresenter.init(createNewPointData);
   }
@@ -197,8 +197,6 @@ export default class TripPresenter {
     }
 
     this.#currentSortType = sortType;
-    // this.#clearPointList();
-    // this.#renderPoints(this.points);
     this.#clearBoard();
     this.#renderBoard();
   }

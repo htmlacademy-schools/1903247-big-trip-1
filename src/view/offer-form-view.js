@@ -291,7 +291,6 @@ export default class OfferFormView extends SmartView {
     // this._data.type.currentType.selectedOffers = filteredOffersData;
 
     this._callback.formSubmit(this._data);
-    // this._callback.formSubmit(OfferFormView.parseDataToPoint(this._data));
   }
 
   #formDeleteClickHandler = (evt) => {
