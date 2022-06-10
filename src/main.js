@@ -1,30 +1,30 @@
-import HeaderInfoView from './view/header-info-view';
 import SiteMenuView from './view/site-menu-view';
-import { render, renderPosition } from './render';
+import StatisticView from './view/statistics-view';
 import TripPresenter from './presenter/Trip-presenter';
+import FilterPresenter from './presenter/Filter-presenter';
 import PointsModels from './model/points-model';
 import FilterModel from './model/filter-model';
-import FilterPresenter from './presenter/Filter-presenter';
-import { MenuItem } from './const';
 import ApiService from './api-service';
+import { render, renderPosition, remove } from './render';
+import { MenuItem } from './const';
 
 
-const AUTHORIAZATION = 'Basic sdjrj34jwkw34';
+const AUTHORIAZATION = 'Basic sdjfrjdr34fjwkw34';
 const END_POINT = 'https://16.ecmascript.pages.academy/big-trip';
 
 
 const tripBody = document.querySelector('.page-body');
-const headerMenu = tripBody.querySelector('.trip-main');
 const siteMenuElement = tripBody.querySelector('.trip-controls__navigation');
 const mainContainer = tripBody.querySelector('.trip-events');
+const buttonAddNewPoint = document.querySelector('.trip-main__event-add-btn');
 const siteMenuComponent = new SiteMenuView();
 
 const pointsModel = new PointsModels(new ApiService(END_POINT, AUTHORIAZATION));
 
 const filterModel = new FilterModel();
 
-const tripPresenter = new TripPresenter(mainContainer, pointsModel, filterModel);
-const filterPresenter = new FilterPresenter(siteMenuElement, filterModel);
+const tripPresenter = new TripPresenter(mainContainer, pointsModel, filterModel, new ApiService(END_POINT, AUTHORIAZATION));
+const filterPresenter = new FilterPresenter(siteMenuElement, filterModel, pointsModel);
 
 const handlePointNewFormClose = () => {
   siteMenuComponent.element.querySelector(`[value=${MenuItem.TABLE}]`).disabled = false;
@@ -32,11 +32,15 @@ const handlePointNewFormClose = () => {
   siteMenuComponent.setMenuItem(MenuItem.TABLE);
 };
 
+let statisticsCOmponent = null;
+let currentMenuItem = 'table';
+
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.ADD_NEW_POINT:
-      // Скрыть статистику
-
+      remove(statisticsCOmponent);
+      filterPresenter.destroy();
+      filterPresenter.init();
       tripPresenter.destroy();
       tripPresenter.init();
       tripPresenter.createNewPoint(handlePointNewFormClose);
@@ -44,39 +48,39 @@ const handleSiteMenuClick = (menuItem) => {
       siteMenuComponent.element.querySelector(`[value=${MenuItem.STATS}]`).disabled = true;
       break;
     case MenuItem.TABLE:
-      filterPresenter.init();
+      filterPresenter.init(pointsModel.points);
       siteMenuComponent.setMenuItem(MenuItem.TABLE);
-      tripPresenter.init();
-      // Скрыть статистику
+      if (currentMenuItem !== 'table') {
+        tripPresenter.init();
+        currentMenuItem = 'table';
+      }
+      remove(statisticsCOmponent);
       break;
     case MenuItem.STATS:
       filterPresenter.destroy();
-      // Скрыть фильтры
-      siteMenuComponent.setMenuItem(MenuItem.STATS);
       tripPresenter.destroy();
-      // Показать статистику
+      if (currentMenuItem !== 'stats') {
+        statisticsCOmponent = new StatisticView(pointsModel.points);
+        render(mainContainer, statisticsCOmponent, renderPosition.BEFOREEND);
+        siteMenuComponent.setMenuItem(MenuItem.STATS);
+        currentMenuItem = 'stats';
+      }
       break;
   }
 };
 
-
-// if (points.length !== 0) {
-//   render(headerMenu, new HeaderInfoView(points[0]).element, renderPosition.AFTERBEGIN);
-// }
-
-
-//render(filtersElement, new FilterView(), renderPosition.BEFOREEND);
-
 tripPresenter.init();
-filterPresenter.init();
 
-document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
+buttonAddNewPoint.addEventListener('click', (evt) => {
   evt.preventDefault();
+  //evt.target.disabled = true;
   tripPresenter.createNewPoint();
+  handlePointNewFormClose();
 });
 
 pointsModel.init().finally(() => {
+  filterPresenter.init(pointsModel.points);
   render(siteMenuElement, siteMenuComponent, renderPosition.AFTERBEGIN);
-  render(headerMenu, new HeaderInfoView().element, renderPosition.AFTERBEGIN);
+  //buttonAddNewPoint.disabled = false;
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 });

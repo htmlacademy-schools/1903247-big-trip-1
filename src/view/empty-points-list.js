@@ -14,7 +14,7 @@ const createEmptyListTemplate = (filterType) => {
   return `<p class="trip-events__msg">${noPointsTextType}</p>`;
 };
 
-export default class MessageWithoutPointsView extends AbstractView{
+export default class MessageWithoutPointsView extends AbstractView {
   constructor(data) {
     super();
     this._data = data;

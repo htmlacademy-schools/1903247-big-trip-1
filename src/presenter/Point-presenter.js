@@ -2,7 +2,6 @@ import PointView from '../view/point-view';
 import OfferFormView from '../view/offer-form-view';
 import { remove, render, renderPosition, replace } from '../render.js';
 import { UpdateType, UserAction } from '../const';
-import dayjs from 'dayjs';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -26,10 +25,15 @@ export default class PointPresenter {
   #changeMode = null;
   #mode = Mode.DEFAULT;
 
-  constructor(pointContainer, changeData, changeMode) {
+  #destinations = null;
+  #allOffers = null;
+
+  constructor(pointContainer, changeData, changeMode, destinations, allOffers) {
     this.#pointContainer = pointContainer;
     this.#changeData = changeData;
     this.#changeMode = changeMode;
+    this.#destinations = destinations;
+    this.#allOffers = allOffers;
   }
 
   init = (point) => {
@@ -38,22 +42,13 @@ export default class PointPresenter {
     const prevPointComponent = this.#pointComponent;
     const prevEditPointComponent = this.#pointEditComponent;
 
-    this.#pointComponent = new PointView(point);
-    this.#pointEditComponent = new OfferFormView(point);
+    this.#pointComponent = new PointView(this.#point);
+    this.#pointEditComponent = new OfferFormView(this.#point, this.#destinations, this.#allOffers);
 
     this.#pointComponent.setEditClickHandler(this.#handleEditClick);
     this.#pointEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
-
-
-    // this.#pointComponent.setEditClickHandler(() => {
-    //   this.#replacePointToForm();
-    //   document.addEventListener('keydown', this.#onEscKeydowm);
-    // });
-    this.#pointEditComponent.setFormSubmitHandler(() => {
-      this.#replaceFormToPoint();
-      document.removeEventListener('keydown', this.#onEscKeydowm);
-    });
+    this.#pointEditComponent.setcloseClickHandler(this.#replaceFormToPoint);
     this.#pointComponent.setFavoriteClickHandler(this.#handleFavorite);
 
     render(this.#pointContainer, this.#pointComponent, renderPosition.BEFOREEND);
@@ -62,7 +57,7 @@ export default class PointPresenter {
       replace(this.#pointComponent, prevPointComponent);
     }
     if (this.#mode === Mode.EDITING && prevEditPointComponent) {
-      replace(this.#pointEditComponent, prevEditPointComponent);
+      replace(this.#pointComponent, prevEditPointComponent);
     }
 
     remove(prevPointComponent);
@@ -129,12 +124,6 @@ export default class PointPresenter {
     document.addEventListener('keydown', this.#onEscKeydowm);
   }
 
-  #onArrowClick = () => {
-    if (this.#point.querySelector('.event__rollup-btn')) {
-      this.#replaceFormToPoint();
-    }
-  }
-
   #onEscKeydowm = (evt) => {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
@@ -148,15 +137,12 @@ export default class PointPresenter {
   }
 
   #handleFormSubmit = (update) => {
-    const isDatesEqual = (dateA, dateB) => (dateA === null && dateB === null) || dayjs(dateA).isSame(dateB, 'D');
-    const isMinorUpdate = !isDatesEqual(this.#point.startEventDate, update.startEventDate) || !isDatesEqual(this.#point.endEventDate, update.endEventDate);
-
+    this.#replaceFormToPoint();
     this.#changeData(
       UserAction.UPDATE_POINT,
-      isMinorUpdate ? UpdateType.MINOR: UpdateType.PATCH,
+      UpdateType.MINOR,
       update
     );
-    this.#replaceFormToPoint();
   }
 
   #handleDeleteClick = (point) => {

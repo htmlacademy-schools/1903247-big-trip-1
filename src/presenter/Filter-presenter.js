@@ -1,32 +1,37 @@
 import FilterView from '../view/filter-view';
 import { render, replace, renderPosition, remove } from '../render';
 import { UpdateType, FilterType } from '../const';
+import { filter } from '../utils/filter';
 
 export default class FilterPresenter {
   #filterContainer = null;
   #filterModel = null;
+  #pointsModel = null;
 
   #filterComponent = null;
 
-  constructor(filterContainer, filterModel) {
+  constructor(filterContainer, filterModel, pointsModel) {
     this.#filterContainer = filterContainer;
     this.#filterModel = filterModel;
+    this.#pointsModel = pointsModel;
   }
 
   get filters() {
+    const points = this.#pointsModel.points;
     return [
       {
         type: FilterType.EVERYTHING,
         name: 'everything',
-
       },
       {
         type: FilterType.FUTURE,
         name: 'future',
+        count: filter[FilterType.FUTURE](points).length
       },
       {
         type: FilterType.PAST,
-        name: 'past'
+        name: 'past',
+        count: filter[FilterType.PAST](points).length
       }
     ];
   }
@@ -35,7 +40,7 @@ export default class FilterPresenter {
     const filters = this.filters;
     const prevFilterComponent = this.#filterComponent;
 
-    this.#filterComponent = new FilterView(filters, this.#filterModel.filter);
+    this.#filterComponent = new FilterView(this.#filterModel.filter, filters);
     this.#filterComponent.setFilterTypeChangeHandler(this.#handleFilterTypeChange);
 
     this.#filterModel.addObserver(this.#handleModelEvent);
@@ -54,8 +59,6 @@ export default class FilterPresenter {
     this.#filterComponent = null;
 
     this.#filterModel.removeObserver(this.#handleModelEvent);
-
-    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.ALL);
   }
 
   #handleModelEvent = () => {

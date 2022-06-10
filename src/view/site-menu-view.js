@@ -11,7 +11,7 @@ const createSiteMenuTemplate = () =>
   </div>
   `;
 
-export default class SiteMenuView extends AbstractView{
+export default class SiteMenuView extends AbstractView {
   get template() {
     return createSiteMenuTemplate();
   }
@@ -29,7 +29,7 @@ export default class SiteMenuView extends AbstractView{
     items.forEach((item) => item.classList.remove('trip-tabs__btn--active'));
     const changingItem = this.element.querySelector(`[value=${menuItem}]`);
 
-    if(changingItem !== null){
+    if (changingItem !== null) {
       changingItem.classList.add('trip-tabs__btn--active');
     }
   }

@@ -19,7 +19,7 @@ class SmartView extends AbstractView {
       return;
     }
 
-    this._data = {...this._data, ...update};
+    this._data = { ...this._data, ...update };
     if (justDataUpdating) {
       return;
     }

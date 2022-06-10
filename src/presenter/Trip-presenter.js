@@ -11,12 +11,16 @@ import PointNewPresenter from './Point-new-presenter';
 import { filter } from '../utils/filter';
 import LoadingView from '../view/loading-view';
 import { nanoid } from 'nanoid';
+import StatisticView from '../view/statistics-view';
+import HeaderInfoView from '../view/header-info-view';
 
 
 export default class TripPresenter {
   #tripContainer = null;
   #pointsModel = null;
   #filterModel = null;
+  #statisticComponent = null;
+  #infoTripComponent = null;
 
   #noPointsComponent = null;
   #sortComponent = null;
@@ -30,11 +34,15 @@ export default class TripPresenter {
   #isLoading = true;
 
   #renderedTotalPrice = 0;
+  #destinations = null;
+  #offers = null;
+  #apiService = null;
 
-  constructor(tripContainer, pointsModel, filterModel) {
+  constructor(tripContainer, pointsModel, filterModel, apiService) {
     this.#tripContainer = tripContainer;
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
+    this.#apiService = apiService;
 
     this.#pointNewPresenter = new PointNewPresenter(this.#pointListComponent, this.#handleViewAction);
   }
@@ -54,7 +62,22 @@ export default class TripPresenter {
     return filteredPoints;
   }
 
-  init = () => {
+  // get destinations() {
+  //   return this.#pointsModel.destinations;
+  // }
+
+  init = async () => {
+    try {
+      this.#destinations = await this.#apiService.destinations;
+    } catch(err) {
+      this.#destinations = [];
+    }
+
+    try {
+      this.#offers = await this.#apiService.offers;
+    } catch(err) {
+      this.#offers = [];
+    }
 
     render(this.#tripContainer, this.#pointListComponent, renderPosition.BEFOREEND);
 
@@ -64,14 +87,25 @@ export default class TripPresenter {
     this.#renderBoard();
   }
 
-  createNewPoint = (callback) => {
+  createNewPoint = () => {
+    remove(this.#statisticComponent);
+
     const point = this.#generatePoint();
 
     const createNewPointData = { ...point, isCreatePoint: true };
     this.#currentSortType = SortType.DAY;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#handleModeChange();
-    this.#pointNewPresenter.init(createNewPointData, callback);
+    this.#pointNewPresenter.init(createNewPointData);
+  }
+
+  createStatistic = () => {
+    this.#statisticComponent = new StatisticView(this.#pointsModel.points);
+    render(this.#tripContainer, this.#statisticComponent, renderPosition.BEFOREEND);
+  }
+
+  deleteStatistic = () =>{
+    remove(this.#statisticComponent);
   }
 
   destroy = () => {
@@ -163,8 +197,6 @@ export default class TripPresenter {
     }
 
     this.#currentSortType = sortType;
-    // this.#clearPointList();
-    // this.#renderPoints(this.points);
     this.#clearBoard();
     this.#renderBoard();
   }
@@ -185,7 +217,7 @@ export default class TripPresenter {
   // }
 
   #renderPoint = (point) => {
-    const pointPresenter = new PointPresenter(this.#pointListComponent, this.#handleViewAction, this.#handleModeChange);
+    const pointPresenter = new PointPresenter(this.#pointListComponent, this.#handleViewAction, this.#handleModeChange, this.#destinations, this.#offers);
     pointPresenter.init(point);
     this.#pointPresenter.set(point.id, pointPresenter);
   };
@@ -203,6 +235,15 @@ export default class TripPresenter {
 
   #renderLoading = () => {
     render(this.#pointListComponent, this.#loadingComponent, renderPosition.AFTERBEGIN);
+  }
+
+  #renderHeaderInfo = () => {
+    const tripContainer = document.querySelector('.trip-main');
+    if (this.points.length > 0) {
+      remove(this.#infoTripComponent);
+      this.#infoTripComponent = new HeaderInfoView(this.points);
+      render(tripContainer, this.#infoTripComponent, renderPosition.AFTERBEGIN);
+    }
   }
 
   #renderNoPoints = () => {
@@ -246,6 +287,7 @@ export default class TripPresenter {
       return;
     }
 
+    this.#renderHeaderInfo();
     this.#renderSort();
     this.#renderPoints(this.points);
   }
